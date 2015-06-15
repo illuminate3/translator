@@ -89,7 +89,7 @@ class MenuRepository extends BaseRepository {
 	 */
 	public function store($input)
 	{
-//dd($input);
+dd($input);
 		$this->model = new Menu;
 		$this->model->create($input);
 	}

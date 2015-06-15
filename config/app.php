@@ -150,6 +150,7 @@ return [
 		 */
 		'Illuminate3\Kotoba\KotobaServiceProvider',
 		'Caffeinated\Themes\ThemesServiceProvider',
+		'Caffeinated\Flash\FlashServiceProvider',
 		'Vinkla\Translator\TranslatorServiceProvider',
 		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',
 		'Menu\MenuServiceProvider',
@@ -205,6 +206,7 @@ return [
 		'View'      => 'Illuminate\Support\Facades\View',
 
 		'Theme'				=> 'Caffeinated\Themes\Facades\Theme',
+		'Flash'				=> 'Caffeinated\Flash\Facades\Flash',
 		'Menu'				=> 'Menu\Menu',
 		'Form'				=> 'Illuminate\Html\FormFacade',
 		'HTML'				=> 'Illuminate\Html\HtmlFacade',
