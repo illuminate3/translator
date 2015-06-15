@@ -11,6 +11,11 @@
 |
 */
 
+	Route::resource('menus', 'MenusController');
+	Route::resource('menulinks', 'MenuLinksController');
+
+
+
 Route::get('/', 'WelcomeController@index');
 Route::get('home', 'HomeController@index');
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6214c3e88e018696d33c7105140c982d",
+    "hash": "b383d127e9f51e39482d5c74302ae127",
     "packages": [
         {
             "name": "anahkiasen/html-object",
@@ -248,6 +248,56 @@
                 "stack"
             ],
             "time": "2015-02-18 08:01:48"
+        },
+        {
+            "name": "caffeinated/themes",
+            "version": "v1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caffeinated/themes.git",
+                "reference": "27d94e93e6f3603e6b0f9c626b69c8af4c8ac6ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caffeinated/themes/zipball/27d94e93e6f3603e6b0f9c626b69c8af4c8ac6ef",
+                "reference": "27d94e93e6f3603e6b0f9c626b69c8af4c8ac6ef",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "5.0.*",
+                "illuminate/filesystem": "5.0.*",
+                "illuminate/support": "5.0.*",
+                "illuminate/view": "5.0.*",
+                "php": ">=5.4.0"
+            },
+            "suggest": {
+                "caffeinated/sapling": "Laravel 5.0 Twig integration package"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Caffeinated\\Themes\\": "src/Caffeinated/Themes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shea Lewis",
+                    "email": "shea.lewis89@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 Themes",
+            "keywords": [
+                "blade",
+                "caffeinated",
+                "laravel",
+                "themes",
+                "twig"
+            ],
+            "time": "2015-06-12 22:15:27"
         },
         {
             "name": "classpreloader/classpreloader",

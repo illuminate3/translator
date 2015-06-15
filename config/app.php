@@ -148,12 +148,13 @@ return [
 		/*
 		 * Composer Service Providers...
 		 */
-// 		'Vinkla\Translator\TranslatorServiceProvider',
-// 		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',
-// 		'Menu\MenuServiceProvider',
-// 		'App\Providers\MenuServiceProvider',
-// 		'Barryvdh\Debugbar\ServiceProvider',
-// 		'Illuminate\Html\HtmlServiceProvider',
+		'Caffeinated\Themes\ThemesServiceProvider',
+		'Vinkla\Translator\TranslatorServiceProvider',
+		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',
+		'Menu\MenuServiceProvider',
+		'App\Providers\MenuServiceProvider',
+		'Barryvdh\Debugbar\ServiceProvider',
+		'Illuminate\Html\HtmlServiceProvider',
 
 	],
 
@@ -203,6 +204,7 @@ return [
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
 
+		'Theme'				=> 'Caffeinated\Themes\Facades\Theme',
 		'Menu'				=> 'Menu\Menu',
 		'Form'				=> 'Illuminate\Html\FormFacade',
 		'HTML'				=> 'Illuminate\Html\HtmlFacade',
