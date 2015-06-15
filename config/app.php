@@ -152,7 +152,6 @@ return [
 		'Vinkla\Translator\TranslatorServiceProvider',
 		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',
 		'Menu\MenuServiceProvider',
-		'App\Providers\MenuServiceProvider',
 		'Barryvdh\Debugbar\ServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
 

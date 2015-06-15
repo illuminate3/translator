@@ -1,8 +1,18 @@
-<?php
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
-use App\Modules\General\Http\Domain\Models\Menu;
-use App\Modules\General\Http\Domain\Repositories\MenuRepository;
+use App\Article;
+use App\Models\Menu;
+use App\Models\Repositories\MenuRepository;
+
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Input;
+
+use Theme;
+
+
+class MenusController extends Controller {
+
+/*
 
 use Illuminate\Http\Request;
 use App\Modules\General\Http\Requests\DeleteRequest;
@@ -11,10 +21,7 @@ use App\Modules\General\Http\Requests\MenuUpdateRequest;
 
 use Datatables;
 use Flash;
-use Theme;
-
-class MenusController extends GeneralController {
-
+*/
 
 	/**
 	 * Menu Repository
@@ -43,7 +50,7 @@ class MenusController extends GeneralController {
 		$menus = $this->menu->all();
 //dd($locales);
 
-		return Theme::View('modules.general.menus.index', compact('menus', 'locales'));
+		return Theme::View('menus.index', compact('menus', 'locales'));
 	}
 
 
@@ -54,7 +61,7 @@ class MenusController extends GeneralController {
 	 */
 	public function create()
 	{
-		return Theme::View('modules.general.menus.create',  $this->menu->create());
+		return Theme::View('menus.create',  $this->menu->create());
 	}
 
 	/**
@@ -104,7 +111,7 @@ class MenusController extends GeneralController {
 //dd($model);
 
 		return View('general::menus.edit',
-//		return Theme::View('modules.general.menus.edit',
+//		return Theme::View('menus.edit',
 			$this->menu->edit($id),
 				compact(
 					'modal_title',

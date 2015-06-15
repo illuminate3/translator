@@ -10,7 +10,7 @@ use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 class Menu extends Model implements TranslatableContract {
 
 	use Translatable;
-	use PresentableTrait;
+//	use PresentableTrait;
 
 
 // Presenter -------------------------------------------------------
