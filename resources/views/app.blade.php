@@ -53,7 +53,9 @@
 		</div>
 	</nav>
 
-	@yield('content')
+	<div class="container">
+		@yield('content')
+	</div><!-- ./container -->
 
 	<!-- Scripts -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

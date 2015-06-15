@@ -11,8 +11,12 @@
 |
 */
 
+Route::group(['prefix' => 'admin'], function() {
+
 	Route::resource('menus', 'MenusController');
 	Route::resource('menulinks', 'MenuLinksController');
+
+});
 
 
 

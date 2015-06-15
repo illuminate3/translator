@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3af64c6dfd7cb53ae7bc4475a8e047ca",
+    "hash": "c95b01df0c76ca25a6aa21f4fcdb6a90",
     "packages": [
         {
             "name": "anahkiasen/html-object",
@@ -248,6 +248,56 @@
                 "stack"
             ],
             "time": "2015-02-18 08:01:48"
+        },
+        {
+            "name": "caffeinated/flash",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caffeinated/flash.git",
+                "reference": "efb806b3c09c0420acd8193499b07a8902981cf2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caffeinated/flash/zipball/efb806b3c09c0420acd8193499b07a8902981cf2",
+                "reference": "efb806b3c09c0420acd8193499b07a8902981cf2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.0.*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Caffeinated\\Flash": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shea Lewis",
+                    "email": "shea.lewis89@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 Flash Messages",
+            "keywords": [
+                "caffeinated",
+                "flash",
+                "laravel"
+            ],
+            "time": "2015-06-12 22:37:43"
         },
         {
             "name": "caffeinated/themes",
@@ -3560,6 +3610,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "illuminate3/kotoba": 20,
+        "caffeinated/flash": 20,
         "laravelrus/localized-carbon": 20
     },
     "prefer-stable": false,

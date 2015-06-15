@@ -148,6 +148,7 @@ return [
 		/*
 		 * Composer Service Providers...
 		 */
+		'Illuminate3\Kotoba\KotobaServiceProvider',
 		'Caffeinated\Themes\ThemesServiceProvider',
 		'Vinkla\Translator\TranslatorServiceProvider',
 		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',

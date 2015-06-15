@@ -1,27 +1,23 @@
 <?php namespace App\Http\Controllers;
 
-use App\Article;
 use App\Models\Menu;
 use App\Models\Repositories\MenuRepository;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\DeleteRequest;
+use App\Http\Requests\MenuCreateRequest;
+use App\Http\Requests\MenuUpdateRequest;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 
+//use Datatables;
+use Flash;
 use Theme;
 
 
 class MenusController extends Controller {
 
-/*
-
-use Illuminate\Http\Request;
-use App\Modules\General\Http\Requests\DeleteRequest;
-use App\Modules\General\Http\Requests\MenuCreateRequest;
-use App\Modules\General\Http\Requests\MenuUpdateRequest;
-
-use Datatables;
-use Flash;
-*/
 
 	/**
 	 * Menu Repository

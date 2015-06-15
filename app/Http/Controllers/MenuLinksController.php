@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+/*
 use App\Modules\General\Http\Domain\Models\Menu;
 use App\Modules\General\Http\Domain\Repositories\MenuRepository;
 use App\Modules\General\Http\Domain\Models\MenuLink;
@@ -16,6 +17,7 @@ use Flash;
 use Lang;
 use Session;
 use Theme;
+*/
 
 class MenuLinksController extends GeneralController {
 
