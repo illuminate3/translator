@@ -12,6 +12,7 @@ class Menu extends Model implements TranslatableContract {
 	use Translatable;
 //	use PresentableTrait;
 
+	protected $table = 'menus';
 
 // Presenter -------------------------------------------------------
 //	protected $presenter = 'App\Modules\General\Http\Presenters\General';

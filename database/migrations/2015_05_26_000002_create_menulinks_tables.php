@@ -27,14 +27,11 @@ class CreateMenulinksTables extends Migration
 			$table->integer('menu_id')->unsigned();
 			$table->integer('page_id')->unsigned()->nullable();
 			$table->integer('parent_id')->unsigned()->nullable()->default(null);
-			$table->integer('position')->unsigned()->default(0);
+			$table->integer('position')->unsigned()->default(1);
 			$table->string('target', 10)->nullable();
 			$table->string('class')->nullable();
 			$table->string('icon_class')->nullable();
 			$table->boolean('has_categories')->nullable();
-
-			$table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
-			$table->foreign('parent_id')->references('id')->on('menulinks')->onDelete('cascade');
 
 			$table->softDeletes();
 			$table->timestamps();
@@ -46,14 +43,17 @@ class CreateMenulinksTables extends Migration
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
 
-			$table->integer('menulink_id')->unsigned();
-			$table->string('locale')->index();
 			$table->boolean('status')->default(0);
-			$table->string('title', 100);
+			$table->string('title');
 			$table->string('url')->nullable();
 
-			$table->unique(array('menulink_id', 'locale'));
+			$table->integer('menulink_id')->unsigned()->index();
 			$table->foreign('menulink_id')->references('id')->on('menulinks')->onDelete('cascade');
+
+			$table->integer('locale_id')->unsigned()->index();
+			$table->foreign('locale_id')->references('id')->on('locales')->onDelete('cascade');
+
+			$table->unique(['menu_id', 'locale_id']);
 
 			$table->softDeletes();
 			$table->timestamps();

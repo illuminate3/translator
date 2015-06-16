@@ -93,8 +93,8 @@ class MenuRepository extends BaseRepository {
 //dd($input);
 
 		$values = [
-			'name' => $input['name'],
-			'class'  => $input['class']
+			'name'			=> $input['name'],
+			'class'			=> $input['class']
 		];
 
 		$menu = Menu::create($values);
@@ -112,8 +112,8 @@ class MenuRepository extends BaseRepository {
 			}
 
 			$values = [
-				'status'  => $status,
-				'title' => $input['title_'.$properties['id']]
+				'status'	=> $status,
+				'title'		=> $input['title_'.$properties['id']]
 			];
 
 			$menu->update($values);
@@ -138,8 +138,8 @@ class MenuRepository extends BaseRepository {
 		$menu = Menu::find($id);
 
 		$values = [
-			'name' => $input['name'],
-			'class'  => $input['class']
+			'name'			=> $input['name'],
+			'class'			=> $input['class']
 		];
 
 		$menu->update($values);
@@ -151,8 +151,8 @@ class MenuRepository extends BaseRepository {
 			App::setLocale($properties['locale']);
 
 			$values = [
-				'status'  => $input['status_'.$properties['id']],
-				'title' => $input['title_'.$properties['id']]
+				'status'	=> $input['status_'.$properties['id']],
+				'title'		=> $input['title_'.$properties['id']]
 			];
 
 			$menu->update($values);

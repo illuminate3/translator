@@ -1,7 +1,10 @@
 <?php
 namespace App\Models\Repositories;
 
-use App\Modules\General\Http\Domain\Models\MenuLink;
+use App\Models\Locale;
+use App\Models\Menu;
+use App\Models\MenuLink;
+
 use Illuminate\Support\Collection;
 
 use App;
@@ -25,9 +28,11 @@ class MenuLinkRepository extends BaseRepository {
 	 * @return void
 	 */
 	public function __construct(
+		Menu $menu,
 		MenuLink $menulink
 		)
 	{
+		$this->menu = $menu;
 		$this->model = $menulink;
 	}
 
@@ -58,12 +63,14 @@ class MenuLinkRepository extends BaseRepository {
 //		$links = MenuLink::has('menu')->get();
 		$lang = Session::get('locale');
 		$locales = $this->getLocales();
-//dd($menu);
+//dd($locales);
 
-		return compact('menu', 'links', 'locales', 'lang');
-// 		$items = $this->all();
-// 		$menus = $this->getMenuHTML($items);
-// 		return compact('menu', 'links', 'locales', 'lang', 'items', 'menus');
+		return compact(
+			'lang',
+			'links',
+			'locales',
+			'menu'
+			);
 	}
 
 	/**
@@ -81,7 +88,12 @@ class MenuLinkRepository extends BaseRepository {
 		$menus = $this->menu->all()->lists('name', 'id');
 		$menus = array('' => trans('kotoba::general.command.select_a') . '&nbsp;' . Lang::choice('kotoba::cms.menu', 1)) + $menus;
 
-		return compact('link', 'locales', 'lang', 'menus');
+		return compact(
+			'lang',
+			'link',
+			'locales',
+			'menus'
+			);
 	}
 
 	/**
@@ -92,8 +104,39 @@ class MenuLinkRepository extends BaseRepository {
 	public function store($input)
 	{
 //dd($input);
-		$this->model = new MenuLink;
-		$this->model->create($input);
+// 		$this->model = new MenuLink;
+// 		$this->model->create($input);
+
+		$values = [
+			'menu_id'		=> $input['menu_id']
+		];
+
+		$menulink = MenuLink::create($values);
+
+		$locales = $this->getLocales();
+
+		foreach($locales as $locale => $properties)
+		{
+			App::setLocale($properties['locale']);
+
+			if ( !isset($input['status_'.$properties['id']]) ) {
+				$status = 0;
+			} else {
+				$status = $input['status_'.$properties['id']];
+			}
+
+			$values = [
+				'status'	=> $status,
+				'title'		=> $input['title_'.$properties['id']],
+				'url'		=> $input['url_'.$properties['id']]
+			];
+
+			$menulink->update($values);
+		}
+
+		App::setLocale('en');
+		return;
+
 	}
 
 	/**
@@ -106,9 +149,41 @@ class MenuLinkRepository extends BaseRepository {
 	public function update($input, $id)
 	{
 //dd($input);
+// 		$menu = MenuLink::find($id);
+// 		$menu->update($input);
 
-		$menu = MenuLink::find($id);
-		$menu->update($input);
+		$menulink = MenuLink::find($id);
+
+		$values = [
+			'menu_id'		=> $input['menu_id']
+		];
+
+		$menulink->update($values);
+
+		$locales = $this->getLocales();
+
+		foreach($locales as $locale => $properties)
+		{
+			App::setLocale($properties['locale']);
+
+			if ( !isset($input['status_'.$properties['id']]) ) {
+				$status = 0;
+			} else {
+				$status = $input['status_'.$properties['id']];
+			}
+
+			$values = [
+				'status'	=> $status,
+				'title'		=> $input['title_'.$properties['id']],
+				'url'		=> $input['url_'.$properties['id']]
+			];
+
+			$menulink->update($values);
+		}
+
+		App::setLocale('en');
+		return $id;
+
 	}
 
 
@@ -124,9 +199,10 @@ class MenuLinkRepository extends BaseRepository {
 	public function getLocales()
 	{
 
-		$config = App::make('config');
+//		$config = App::make('config');
 //		$locales = (array) $config->get('translatable.locales', []);
-		$locales = (array) $config->get('languages.supportedLocales', []);
+//		$locales = (array) $config->get('languages.supportedLocales', []);
+ 		$locales = Locale::all();
 
 		if ( empty($locales) ) {
 			throw new LocalesNotDefinedException('Please make sure you have run "php artisan config:publish dimsav/laravel-translatable" ' . ' and that the locales configuration is defined.');
