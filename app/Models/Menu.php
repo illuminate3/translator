@@ -22,7 +22,10 @@ class Menu extends Model implements TranslatableContract {
 
 
 // DEFINE Hidden -------------------------------------------------------
-	protected $hidden = ['created_at', 'updated_at'];
+	protected $hidden = [
+		'created_at',
+		'updated_at'
+		];
 
 
 // DEFINE Fillable -------------------------------------------------------

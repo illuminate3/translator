@@ -9,6 +9,11 @@ class Locale extends Model {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['language'];
+	protected $fillable = [
+		'locale',
+		'name',
+		'script',
+		'native'
+		];
 
 }

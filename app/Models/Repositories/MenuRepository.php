@@ -1,6 +1,7 @@
 <?php
 namespace App\Models\Repositories;
 
+use App\Models\Locale;
 use App\Models\Menu;
 use Illuminate\Support\Collection;
 
@@ -89,9 +90,47 @@ class MenuRepository extends BaseRepository {
 	 */
 	public function store($input)
 	{
-dd($input);
+//dd($input);
+
+		$locales = $this->getLocales();
+//dd($locales);
+//
+// $values = [
+// 	'name' => $input['name'],
+// 	'class'  => $input['class']
+// ];
+// $menu = Menu::create($values);
+//
+// foreach($locales as $locale => $properties)
+// {
+// 	App::setLocale($properties['locale']);
+// 	$values = [
+// 		'title' => $input['title_'.$properties['id']],
+// 		'status'  => $input['status_'.$properties['id']]
+// 	];
+// 	$menu->update($input);
+// }
+
 		$this->model = new Menu;
+foreach ($locales as $locale => $properties) {
+		App::setLocale($properties['locale']);
+		// Create a new article.
 		$this->model->create($input);
+}
+
+App::setLocale('en');
+
+
+
+
+
+// foreach ($locales as $locale) {
+// 		App::setLocale($locale->locale);
+// 		// Create a new article.
+// 		$this->model = new Menu;
+// 		$this->model->create($input);
+// }
+
 	}
 
 	/**
@@ -103,7 +142,7 @@ dd($input);
 	 */
 	public function update($input, $id)
 	{
-//dd($input);
+dd($input);
 
 		$menu = Menu::find($id);
 		$menu->update($input);
@@ -113,9 +152,13 @@ dd($input);
 	public function getLocales()
 	{
 
-		$config = App::make('config');
-//		$locales = (array) $config->get('translatable.locales', []);
-		$locales = (array) $config->get('languages.supportedLocales', []);
+// 		$config = App::make('config');
+// 		$locales = (array) $config->get('languages.supportedLocales', []);
+ 		$locales = Locale::all();
+// 		$locales = DB::table('locales')
+// 			->lists('locale');
+
+//dd($locales);
 
 	if ( empty($locales) ) {
 		throw new LocalesNotDefinedException('Please make sure you have run "php artisan config:publish dimsav/laravel-translatable" ' . ' and that the locales configuration is defined.');

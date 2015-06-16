@@ -20,7 +20,7 @@ class LocaleTableSeeder extends Seeder {
 				'locale'				=> 'en',
 				'name'					=> 'English',
 				'script'				=> 'Latn',
-				'native'				=> 'Enabled'
+				'native'				=> 'English'
 			),
 			array(
 				'locale'				=> 'es',

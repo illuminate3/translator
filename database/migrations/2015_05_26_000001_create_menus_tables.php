@@ -34,15 +34,38 @@ class CreateMenusTables extends Migration
 
 		Schema::create($this->prefix . 'menu_translations', function(Blueprint $table) {
 
+// 			$table->string('title');
+// 			$table->string('content');
+
+// 			$table->integer('article_id')->unsigned()->index();
+// 			$table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+//
+// 			$table->integer('locale_id')->unsigned()->index();
+// 			$table->foreign('locale_id')->references('id')->on('locales')->onDelete('cascade');
+//
+// 			$table->unique(['article_id', 'locale_id']);
+//
+// 			$table->timestamps();
+
+
+
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
 
-			$table->integer('menu_id')->unsigned();
-			$table->string('locale')->index();
+//			$table->integer('menu_id')->unsigned();
+//			$table->string('locale')->index();
 			$table->boolean('status')->default(0);
 			$table->string('title');
-			$table->unique(array('menu_id', 'locale'));
+
+//			$table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
+
+			$table->integer('menu_id')->unsigned()->index();
 			$table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
+
+			$table->integer('locale_id')->unsigned()->index();
+			$table->foreign('locale_id')->references('id')->on('locales')->onDelete('cascade');
+
+			$table->unique(['menu_id', 'locale_id']);
 
 			$table->softDeletes();
 			$table->timestamps();
