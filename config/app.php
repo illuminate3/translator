@@ -153,9 +153,12 @@ return [
 		'Caffeinated\Flash\FlashServiceProvider',
 		'Vinkla\Translator\TranslatorServiceProvider',
 		'Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider',
-		'Menu\MenuServiceProvider',
+//		'Menu\MenuServiceProvider',
 		'Barryvdh\Debugbar\ServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
+		'Caffeinated\Menus\MenusServiceProvider',
+		'App\Providers\GeneralMenuProvider',
+
 
 	],
 
@@ -207,7 +210,8 @@ return [
 
 		'Theme'				=> 'Caffeinated\Themes\Facades\Theme',
 		'Flash'				=> 'Caffeinated\Flash\Facades\Flash',
-		'Menu'				=> 'Menu\Menu',
+//		'Menu'				=> 'Menu\Menu',
+		'Menu'				=> 'Caffeinated\Menus\Facades\Menu',
 		'Form'				=> 'Illuminate\Html\FormFacade',
 		'HTML'				=> 'Illuminate\Html\HtmlFacade',
 		'LocalizedCarbon'	=> 'Laravelrus\LocalizedCarbon\LocalizedCarbon',

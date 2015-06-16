@@ -2,6 +2,10 @@
 
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Application;
+use App;
+
 class AppServiceProvider extends ServiceProvider {
 
 	/**
@@ -28,7 +32,17 @@ class AppServiceProvider extends ServiceProvider {
 		$this->app->bind(
 			'Illuminate\Contracts\Auth\Registrar',
 			'App\Services\Registrar'
+//			'Caffeinated\Menus\MenusServiceProvider'
 		);
+
+//App::register('App\Providers\MenuServiceProvider');
+//App::register('App\Providers\GeneralMenuProvider');
+
+// AliasLoader::getInstance()->alias(
+// 	'Menus', 'Caffeinated\Menus\Facades\Menu'
+// );
+
+
 	}
 
 }
