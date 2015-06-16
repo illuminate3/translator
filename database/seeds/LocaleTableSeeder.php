@@ -20,13 +20,15 @@ class LocaleTableSeeder extends Seeder {
 				'locale'				=> 'en',
 				'name'					=> 'English',
 				'script'				=> 'Latn',
-				'native'				=> 'English'
+				'native'				=> 'English',
+				'default'				=> 1
 			),
 			array(
 				'locale'				=> 'es',
 				'name'					=> 'Spanish',
 				'script'				=> 'Latn',
-				'native'				=> 'español'
+				'native'				=> 'español',
+				'default'				=> 0
 			)
 		);
 

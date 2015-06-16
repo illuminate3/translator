@@ -44,10 +44,10 @@ class Menu extends Model implements TranslatableContract {
 		'title'
 		];
 
-	protected $appends = [
-		'status',
-		'title'
-		];
+// 	protected $appends = [
+// 		'status',
+// 		'title'
+// 		];
 
 	public function getStatusAttribute()
 	{

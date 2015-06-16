@@ -106,7 +106,7 @@ class MenusController extends Controller {
 		$model = 'menu';
 //dd($model);
 
-		return View('general::menus.edit',
+		return View('menus.edit',
 //		return Theme::View('menus.edit',
 			$this->menu->edit($id),
 				compact(
@@ -145,9 +145,11 @@ class MenusController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		$this->menu->find($id)->delete();
+//dd($id);
+		Menu::find($id)->delete();
 
-		return Redirect::route('admin.menus.index');
+		Flash::success( trans('kotoba::cms.success.menu_delete') );
+		return redirect('admin/menus');
 	}
 
 	/**

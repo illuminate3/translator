@@ -92,44 +92,35 @@ class MenuRepository extends BaseRepository {
 	{
 //dd($input);
 
+		$values = [
+			'name' => $input['name'],
+			'class'  => $input['class']
+		];
+
+		$menu = Menu::create($values);
+
 		$locales = $this->getLocales();
-//dd($locales);
-//
-// $values = [
-// 	'name' => $input['name'],
-// 	'class'  => $input['class']
-// ];
-// $menu = Menu::create($values);
-//
-// foreach($locales as $locale => $properties)
-// {
-// 	App::setLocale($properties['locale']);
-// 	$values = [
-// 		'title' => $input['title_'.$properties['id']],
-// 		'status'  => $input['status_'.$properties['id']]
-// 	];
-// 	$menu->update($input);
-// }
 
-		$this->model = new Menu;
-foreach ($locales as $locale => $properties) {
-		App::setLocale($properties['locale']);
-		// Create a new article.
-		$this->model->create($input);
-}
+		foreach($locales as $locale => $properties)
+		{
+			App::setLocale($properties['locale']);
 
-App::setLocale('en');
+			if ( !isset($input['status_'.$properties['id']]) ) {
+				$status = 0;
+			} else {
+				$status = $input['status_'.$properties['id']];
+			}
 
+			$values = [
+				'status'  => $status,
+				'title' => $input['title_'.$properties['id']]
+			];
 
+			$menu->update($values);
+		}
 
-
-
-// foreach ($locales as $locale) {
-// 		App::setLocale($locale->locale);
-// 		// Create a new article.
-// 		$this->model = new Menu;
-// 		$this->model->create($input);
-// }
+		App::setLocale('en');
+		return;
 
 	}
 
@@ -142,10 +133,33 @@ App::setLocale('en');
 	 */
 	public function update($input, $id)
 	{
-dd($input);
+//dd($input);
 
 		$menu = Menu::find($id);
-		$menu->update($input);
+
+		$values = [
+			'name' => $input['name'],
+			'class'  => $input['class']
+		];
+
+		$menu->update($values);
+
+		$locales = $this->getLocales();
+
+		foreach($locales as $locale => $properties)
+		{
+			App::setLocale($properties['locale']);
+
+			$values = [
+				'status'  => $input['status_'.$properties['id']],
+				'title' => $input['title_'.$properties['id']]
+			];
+
+			$menu->update($values);
+		}
+
+		App::setLocale('en');
+		return;
 	}
 
 

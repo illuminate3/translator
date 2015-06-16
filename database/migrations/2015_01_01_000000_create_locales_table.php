@@ -18,13 +18,19 @@ class CreateLocalesTable extends Migration {
 
 		Schema::create('locales', function(Blueprint $table)
 		{
-			$table->increments('id');
-//			$table->string('language', 2);
+
+			$table->engine = 'InnoDB';
+			$table->increments('id')->unsigned();
+
 			$table->string('locale', 2);
 			$table->string('name', 20);
 			$table->string('script', 20);
 			$table->string('native', 20);
+			$table->boolean('default')->default(0)->nullable();
+
+			$table->softDeletes();
 			$table->timestamps();
+
 		});
 	}
 
