@@ -57,10 +57,15 @@
 		@yield('content')
 	</div><!-- ./container -->
 
-			@include('_partials.menu', ['items'=> $menu_navbar->roots()])
 {{--
+			@include('_partials.menu', ['items'=> $menu_navbar->roots()])
 			@include('_partials.menu_links')
 --}}
+{!!
+	Menu::handler('main');
+!!}
+
+
 
 	<!-- Scripts -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

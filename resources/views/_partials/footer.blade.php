@@ -11,6 +11,9 @@
 	{!! Menus::render('footer') !!}
 </nav>
 --}}
+{!!
+	Menu::handler('main');
+!!}
 
 
 

@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider {
 //			'Caffeinated\Menus\MenusServiceProvider'
 		);
 
-//App::register('App\Providers\MenuServiceProvider');
+App::register('App\Providers\MenuServiceProvider');
 //App::register('App\Providers\GeneralMenuProvider');
 
 // AliasLoader::getInstance()->alias(

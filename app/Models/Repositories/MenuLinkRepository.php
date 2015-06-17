@@ -58,8 +58,9 @@ class MenuLinkRepository extends BaseRepository {
 	 */
 	public function show($id)
 	{
-		$menu = $this->model->find($id);
-		$links = MenuLink::all();
+//		$menu = $this->model->find($id);
+//		$links = MenuLink::all();
+		$links = $this->model->where('menu_id', '=', $id)->get();
 //		$links = MenuLink::has('menu')->get();
 		$lang = Session::get('locale');
 		$locales = $this->getLocales();
@@ -68,8 +69,8 @@ class MenuLinkRepository extends BaseRepository {
 		return compact(
 			'lang',
 			'links',
-			'locales',
-			'menu'
+			'locales'
+// 			'menu'
 			);
 	}
 
