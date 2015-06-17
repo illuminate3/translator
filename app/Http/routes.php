@@ -13,6 +13,7 @@
 
 Route::group(['prefix' => 'admin'], function() {
 
+	Route::resource('locales', 'LocalesController');
 	Route::resource('menus', 'MenusController');
 	Route::resource('menulinks', 'MenuLinksController');
 
