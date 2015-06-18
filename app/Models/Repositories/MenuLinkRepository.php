@@ -109,7 +109,9 @@ class MenuLinkRepository extends BaseRepository {
 // 		$this->model->create($input);
 
 		$values = [
-			'menu_id'		=> $input['menu_id']
+			'class'			=> $input['class'],
+			'menu_id'		=> $input['menu_id'],
+			'position'		=> $input['position']
 		];
 
 		$menulink = MenuLink::create($values);
@@ -156,7 +158,9 @@ class MenuLinkRepository extends BaseRepository {
 		$menulink = MenuLink::find($id);
 
 		$values = [
-			'menu_id'		=> $input['menu_id']
+			'class'			=> $input['class'],
+			'menu_id'		=> $input['menu_id'],
+			'position'		=> $input['position']
 		];
 
 		$menulink->update($values);

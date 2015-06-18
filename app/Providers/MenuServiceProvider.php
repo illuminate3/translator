@@ -12,6 +12,7 @@ use App\Models\MenuLink;
 use Auth;
 use Cache;
 use Config;
+use DB;
 use Menu;
 use Session;
 
@@ -27,6 +28,7 @@ class MenuServiceProvider extends ServiceProvider {
 
 //		$lang = Session::get('locale');
 //dd($main_menu_id);
+//		if ( DB::table('menus')->exists() ) {
 
 		Menu::handler('main')->hydrate(function()
 			{
@@ -42,7 +44,7 @@ class MenuServiceProvider extends ServiceProvider {
 				$children->add($item->translate(Config::get('app.locale'))->url, $item->translate(Config::get('app.locale'))->title, Menu::items($item->as));
 			});
 
-
+//		}
 /*
 // navbar menu
 		Menu::make('navbar', function($menu) {

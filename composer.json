@@ -11,6 +11,7 @@
 		"caffeinated/themes": "~1.2",
 		"vinkla/translator": "~2.0",
 		"vespakoen/menu": "3.*",
+		"laracasts/presenter": "dev-master",
 		"kalnoy/nestedset": "~2.4",
 		"jbroadway/urlify": "~1.0",
 		"barryvdh/laravel-debugbar": "^2.0",

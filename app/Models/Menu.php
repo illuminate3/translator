@@ -3,19 +3,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-//use Laracasts\Presenter\PresentableTrait;
+use Laracasts\Presenter\PresentableTrait;
 use Vinkla\Translator\Translatable;
 use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 
 class Menu extends Model implements TranslatableContract {
 
 	use Translatable;
-//	use PresentableTrait;
+	use PresentableTrait;
 
 	protected $table = 'menus';
 
 // Presenter -------------------------------------------------------
-//	protected $presenter = 'App\Modules\General\Http\Presenters\General';
+	protected $presenter = 'App\Http\Presenters\General';
 
 
 // Translation Model -------------------------------------------------------

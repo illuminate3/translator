@@ -80,11 +80,12 @@
 					{{ $link->position }}
 				</td>
 				<td>
-					{{ $link->menu_id }}
+					{{ $link->present()->menuName($link->menu_id) }}
+					{{-- $link->menu_id --}}
 				</td>
 				<td>
-					{{-- $link->present()->status( $link->translate($properties['locale'])->status ) --}}
-					{{ $link->translate($properties['locale'])->status }}
+					{{ $link->present()->status( $link->translate($properties['locale'])->status ) }}
+					{{-- $link->translate($properties['locale'])->status --}}
 				</td>
 				<td>
 					<a href="/admin/menulinks/{{ $link->id }}/edit" class="btn btn-success" title="{{ trans('kotoba::button.edit') }}">
