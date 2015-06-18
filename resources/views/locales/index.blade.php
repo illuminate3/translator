@@ -2,7 +2,7 @@
 
 {{-- Web site Title --}}
 @section('title')
-{{ Lang::choice('kotoba::general.status', 2) }} :: @parent
+{{ Lang::choice('kotoba::cms.locale', 2) }} :: @parent
 @stop
 
 @section('styles')
@@ -18,41 +18,6 @@
 $(document).ready(function() {
 oTable =
 	$('#table').DataTable({
-		"processing": true,
-		"serverSide": true,
-		"ajax": "{{ URL::to('admin/api/statuses') }}",
-		"columns": [
-			{
-				data: 'id',
-				name: 'id',
-				searchable: false,
-				visible: false
-			},
-			{
-				data: 'name',
-				name: 'name',
-				orderable: true,
-				searchable: true
-			},
-			{
-				data: 'description',
-				name: 'description',
-				orderable: true,
-				searchable: true
-			},
-			{
-				data: 'updated_at',
-				name: 'updated_at',
-				orderable: true,
-				searchable: true
-			},
-			{
-				data: 'actions',
-				name: 'actions',
-				orderable: false,
-				searchable: false
-			}
-		]
 	});
 });
 @stop
@@ -65,13 +30,13 @@ oTable =
 <div class="row">
 <h1>
 	<p class="pull-right">
-	<a href="/admin/statuses/create" class="btn btn-primary" title="{{ trans('kotoba::button.new') }}">
+	<a href="/admin/locales/create" class="btn btn-primary" title="{{ trans('kotoba::button.new') }}">
 		<i class="fa fa-plus fa-fw"></i>
 		{{ trans('kotoba::button.new') }}
 	</a>
 	</p>
 	<i class="fa fa-angle-double-right fa-lg"></i>
-		{{ Lang::choice('kotoba::general.status', 2) }}
+		{{ Lang::choice('kotoba::cms.locale', 2) }}
 	<hr>
 </h1>
 </div>
@@ -81,15 +46,32 @@ oTable =
 <table id="table" class="table table-striped table-hover">
 	<thead>
 		<tr>
-			<th></th>
+			<th>{{ trans('kotoba::table.locale') }}</th>
 			<th>{{ trans('kotoba::table.name') }}</th>
-			<th>{{ trans('kotoba::table.description') }}</th>
-			<th>{{ trans('kotoba::table.updated_at') }}</th>
+			<th>{{ trans('kotoba::table.script') }}</th>
+			<th>{{ trans('kotoba::table.native') }}</th>
+			<th>{{ trans('kotoba::table.default') }}</th>
 
 			<th>{{ Lang::choice('kotoba::table.action', 2) }}</th>
 		</tr>
 	</thead>
-	<tbody></tbody>
+	<tbody>
+		@foreach ($locales as $locale)
+			<tr>
+				<td>{{ $locale->locale }}</td>
+				<td>{{ $locale->name }}</td>
+				<td>{{ $locale->script }}</td>
+				<td>{{ $locale->native }}</td>
+				<td>{{ $locale->default }}</td>
+				<td>
+					<a href="/admin/locales/{{ $locale->id }}/edit" class="btn btn-success" title="{{ trans('kotoba::button.edit') }}">
+						<i class="fa fa-pencil fa-fw"></i>
+						{{ trans('kotoba::button.edit') }}
+					</a>
+				</td>
+			</tr>
+		@endforeach
+	</tbody>
 </table>
 </div>
 

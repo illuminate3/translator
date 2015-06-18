@@ -31,7 +31,7 @@ class LocalesController extends Controller {
 	{
 		$this->locale = $locale;
 // middleware
-		$this->middleware('admin');
+//		$this->middleware('admin');
 	}
 
 	/**
@@ -41,7 +41,10 @@ class LocalesController extends Controller {
 	 */
 	public function index()
 	{
-		return Theme::View('modules.general.localees.index');
+		$locales = $this->locale->all();
+//dd($locales);
+
+		return Theme::View('locales.index', compact('locales'));
 	}
 
 	/**
@@ -51,7 +54,7 @@ class LocalesController extends Controller {
 	 */
 	public function create()
 	{
-		return Theme::View('modules.general.localees.create',  $this->locale->create());
+		return Theme::View('locales.create',  $this->locale->create());
 	}
 
 	/**
@@ -66,7 +69,7 @@ class LocalesController extends Controller {
 		$this->locale->store($request->all());
 
 		Flash::success( trans('kotoba::hr.success.locale_create') );
-		return redirect('admin/localees');
+		return redirect('admin/locales');
 	}
 
 	/**
@@ -79,7 +82,7 @@ class LocalesController extends Controller {
 	{
 // 		$locale = $this->locale->findOrFail($id);
 //
-// 		return View::make('HR::localees.show', compact('locale'));
+// 		return View::make('HR::locales.show', compact('locale'));
 	}
 
 	/**
@@ -92,13 +95,13 @@ class LocalesController extends Controller {
 	{
 		$modal_title = trans('kotoba::general.command.delete');
 		$modal_body = trans('kotoba::general.ask.delete');
-		$modal_route = 'admin.localees.destroy';
+		$modal_route = 'admin.locales.destroy';
 		$modal_id = $id;
 		$model = '$locale';
 //dd($modal_body);
 
-		return View('general::localees.edit',
-//		return Theme::View('modules.general.localees.edit',
+		return View('general::locales.edit',
+//		return Theme::View('locales.edit',
 			$this->locale->edit($id),
 				compact(
 					'modal_title',
@@ -124,7 +127,7 @@ class LocalesController extends Controller {
 		$this->locale->update($request->all(), $id);
 
 		Flash::success( trans('kotoba::hr.success.locale_update') );
-		return redirect('admin/localees');
+		return redirect('admin/locales');
 	}
 
 	/**
@@ -137,7 +140,7 @@ class LocalesController extends Controller {
 	{
 		$this->locale->find($id)->delete();
 
-		return Redirect::route('admin.localees.index');
+		return Redirect::route('admin.locales.index');
 	}
 
 	/**
@@ -147,8 +150,8 @@ class LocalesController extends Controller {
 	*/
 	public function data()
 	{
-//		$query = Locale::select(array('localees.id','localees.name','localees.description'))
-//			->orderBy('localees.name', 'ASC');
+//		$query = Locale::select(array('locales.id','locales.name','locales.description'))
+//			->orderBy('locales.name', 'ASC');
 //		$query = Locale::select('id', 'name' 'description', 'updated_at');
 //			->orderBy('name', 'ASC');
 		$query = Locale::select('id', 'name', 'description', 'updated_at');
@@ -160,7 +163,7 @@ class LocalesController extends Controller {
 			->addColumn(
 				'actions',
 				'
-					<a href="{{ URL::to(\'admin/localees/\' . $id . \'/edit\' ) }}" class="btn btn-success btn-sm" >
+					<a href="{{ URL::to(\'admin/locales/\' . $id . \'/edit\' ) }}" class="btn btn-success btn-sm" >
 						<span class="glyphicon glyphicon-pencil"></span>  {{ trans("kotoba::button.edit") }}
 					</a>
 				'

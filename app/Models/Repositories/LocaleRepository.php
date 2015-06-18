@@ -2,7 +2,7 @@
 namespace App\Models\Repositories;
 
 use App\Models\Locale;
-use App\Models\Menu;
+//use App\Models\Menu;
 use Illuminate\Support\Collection;
 
 use App;
