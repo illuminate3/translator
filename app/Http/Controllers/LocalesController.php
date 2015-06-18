@@ -100,7 +100,7 @@ class LocalesController extends Controller {
 		$model = '$locale';
 //dd($modal_body);
 
-		return View('general::locales.edit',
+		return View('locales.edit',
 //		return Theme::View('locales.edit',
 			$this->locale->edit($id),
 				compact(

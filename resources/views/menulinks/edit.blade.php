@@ -153,8 +153,6 @@
 	<input class="btn btn-success btn-block" type="submit" value="{{ trans('kotoba::button.save') }}">
 </div>
 
-{!! Form::close() !!}
-
 
 <div class="row">
 <div class="col-sm-4">
@@ -176,6 +174,9 @@
 	</a>
 </div>
 </div>
+
+
+{!! Form::close() !!}
 
 
 </div> <!-- ./ row -->

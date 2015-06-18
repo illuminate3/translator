@@ -70,7 +70,7 @@ class LocaleRepository extends BaseRepository {
 	public function edit($id)
 	{
 		$locale = $this->model->find($id);
-//dd($module);
+//dd($locale);
 
 		return compact('locale');
 	}

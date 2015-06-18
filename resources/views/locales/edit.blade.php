@@ -2,7 +2,7 @@
 
 {{-- Web site Title --}}
 @section('title')
-{{ Lang::choice('kotoba::general.status', 2) }} :: @parent
+{{ Lang::choice('kotoba::cms.locale', 2) }} :: @parent
 @stop
 
 @section('styles')
@@ -21,7 +21,7 @@
 <div class="row">
 <h1>
 	<p class="pull-right">
-	<a href="/admin/statuses" class="btn btn-default" title="{{ trans('kotoba::button.back') }}">
+	<a href="/admin/locale" class="btn btn-default" title="{{ trans('kotoba::button.back') }}">
 		<i class="fa fa-chevron-left fa-fw"></i>
 		{{ trans('kotoba::button.back') }}
 	</a>
@@ -35,9 +35,9 @@
 
 <div class="row">
 {!! Form::model(
-	$status,
+	$locale,
 	[
-		'route' => ['admin.statuses.update', $status->id],
+		'route' => ['admin.locales.update', $locale->id],
 		'method' => 'PATCH',
 		'class' => 'form'
 	]
@@ -47,7 +47,7 @@
 <div class="form-group">
 <div class="input-group">
 	<span class="input-group-addon"><i class="fa fa-tag fa-fw"></i></span>
-		<input type="text" id="name" name="name" value="{{ $status->name }}" placeholder="{{ trans('kotoba::account.name') }}" class="form-control" autofocus="autofocus">
+		<input type="text" id="locale" name="locale" value="{{ $locale->locale }}" placeholder="{{ trans('kotoba::cms.locale') }}" class="form-control" autofocus="autofocus">
 </div>
 </div>
 
@@ -55,7 +55,31 @@
 <div class="form-group">
 <div class="input-group">
 	<span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
-		<input type="text" id="description" name="description" value="{{ $status->description }}" placeholder="{{ trans('kotoba::general.description') }}" class="form-control">
+		<input type="text" id="name" name="name" value="{{ $locale->name }}" placeholder="{{ trans('kotoba::general.name') }}" class="form-control">
+</div>
+</div>
+
+
+<div class="form-group">
+<div class="input-group">
+	<span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+		<input type="text" id="script" name="script" value="{{ $locale->script }}" placeholder="{{ trans('kotoba::cms.script') }}" class="form-control">
+</div>
+</div>
+
+
+<div class="form-group">
+<div class="input-group">
+	<span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+		<input type="text" id="native" name="native" value="{{ $locale->native }}" placeholder="{{ trans('kotoba::cms.native') }}" class="form-control">
+</div>
+</div>
+
+
+<div class="form-group">
+<div class="input-group">
+	<span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+		<input type="text" id="default" name="default" value="{{ $locale->default }}" placeholder="{{ trans('kotoba::general.default') }}" class="form-control">
 </div>
 </div>
 
@@ -67,12 +91,10 @@
 	<input class="btn btn-success btn-block" type="submit" value="{{ trans('kotoba::button.save') }}">
 </div>
 
-{!! Form::close() !!}
-
 
 <div class="row">
 <div class="col-sm-4">
-	<a href="/admin/statuses" class="btn btn-default btn-block" title="{{ trans('kotoba::button.cancel') }}">
+	<a href="/admin/locales" class="btn btn-default btn-block" title="{{ trans('kotoba::button.cancel') }}">
 		<i class="fa fa-times fa-fw"></i>
 		{{ trans('kotoba::button.cancel') }}
 	</a>
@@ -90,6 +112,9 @@
 	</a>
 </div>
 </div>
+
+
+{!! Form::close() !!}
 
 
 </div> <!-- ./ row -->
