@@ -1,12 +1,27 @@
 <?php
-use Baum\Node;
+namespace App\Models\Nifty;
 
-/**
-* MODEL
-*/
+use Illuminate\Database\Eloquent\Model;
+
+//use App\Models\Nifty\User;
+//use App\Models\User;
+
+use Baum\Node;
+use Cache;
+
 class Page extends Node {
 
-    protected $table = 'pages';
+	protected $table = 'pages';
+
+
+// DEFINE Fillable -------------------------------------------------------
+	protected $fillable = [
+// 		'locale',
+// 		'name',
+// 		'script',
+// 		'native'
+		];
+
 
 	public static $rules = [
 								'title' => 'required|max:255',
@@ -16,11 +31,15 @@ class Page extends Node {
                                 'link' => 'URL'
 							];
 
+
+// Relations -------------------------------------------------------
 	public function user()
 	{
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Nifty\User');
 	}
 
+
+// Functions -------------------------------------------------------
     public static function getLatestVersions($type, $paginate)
     {
         $pages = '';
@@ -96,7 +115,7 @@ class Page extends Node {
         $allNotDeletedNum = Cache::remember('allNotDeletedNumPages', $minutes, function()
         {
             return static::countPages('allNotDeleted');
-        }); 
+        });
 
         return $allNotDeletedNum;
     }
@@ -129,7 +148,7 @@ class Page extends Node {
         });
 
         return $deletedNum;
-    }    
+    }
 
     // public static function getSinglePage($slug) //Check
     // {
@@ -163,7 +182,7 @@ class Page extends Node {
 
 
 ##################FRONTEND PAGES METHODS########################################
-    
+
     public static function getPage( $slug )
     {
        $page =  static::whereIsCurrent(1)
@@ -183,7 +202,7 @@ class Page extends Node {
     }
 
     public static function getRoots()
-    {  
+    {
         // $roots = Cache::rememberForever('roots', function()
         // {
             return static::whereIsCurrent(1)
@@ -226,7 +245,8 @@ class Page extends Node {
                                 ->orWhere('summary', 'like', "%$term%")
                                 ->orWhere('content', 'like', "%$term%");
                             })
-                        ->get();        
+                        ->get();
     }
+
 
 }

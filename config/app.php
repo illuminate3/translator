@@ -158,6 +158,7 @@ return [
 		'Illuminate\Html\HtmlServiceProvider',
 // 		'Caffeinated\Menus\MenusServiceProvider',
 // 		'App\Providers\GeneralMenuProvider',
+		'Baum\Providers\BaumServiceProvider',
 
 
 	],
@@ -207,6 +208,8 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
+
+		'Str'				=> 'Illuminate\Support\Str',
 
 		'Theme'				=> 'Caffeinated\Themes\Facades\Theme',
 		'Flash'				=> 'Caffeinated\Flash\Facades\Flash',

@@ -1,14 +1,42 @@
 <?php
-use Carbon\Carbon;
+namespace App\Http\Controllers;
 
-class PageController extends BaseController {
+use App\Models\Nifty\Page;
+//use App\Models\Repositories\PageRepository;
+use App\Models\Nifty\Setting;
+
+use App\Helpers\Nifty\BackendPages;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\DeleteRequest;
+// use App\Http\Requests\PageCreateRequest;
+// use App\Http\Requests\PageUpdateRequest;
+
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Input;
+
+use Cache;
+use Carbon\Carbon;
+//use Datatables;
+use Flash;
+use Route;
+use Theme;
+use View;
+
+
+class PageController extends Controller {
 
 	public function __construct()
 	{
-		$this->user = Sentry::getUser();
-		$this->isAdmin = User::isAdmin( $this->user );
-		$this->logged_in_for = $this->user->last_login->diffForHumans();
+//		$this->user = Sentry::getUser();
+		$this->user = "1";
+//		$this->isAdmin = User::isAdmin( $this->user );
+		$this->isAdmin = true;
+//		$this->logged_in_for = $this->user->last_login->diffForHumans();
+		$this->logged_in_for = "1 hour ago";
+
 		$this->configs = Setting::getSiteSettings();
+
 		$this->id = Route::current()->parameter( 'id' );
 		$this->pagelist = Page::getParentOptions( $exceptId = $this->id );
 		$this->rules = Page::$rules;
@@ -22,7 +50,7 @@ class PageController extends BaseController {
 	{
 		$pages = Page::getLatestVersions( 'allNotDeleted', $this->paginate );
 
-		$backendPages = new Jamesy\BackendPages( $pages, $type = 'all' );
+		$backendPages = new BackendPages( $pages, $type = 'all' );
 		$pagesHtml = $backendPages->getPagesHtml();
 
 		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
@@ -30,117 +58,57 @@ class PageController extends BaseController {
 		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
 		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
 
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");		
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
 
-        return View::make('backend.pages.index', [
-        			'user' => $this->user, 
-        			'isAdmin' => $this->isAdmin, 
-        			'configs' => $this->configs, 
-        			'logged_in_for' => $this->logged_in_for, 
-        			'pagesHtml' => $pagesHtml, 
-        			'nums' => $nums,
-        			'type' => 'All', 
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);		
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$configs = $this->configs;
+		$logged_in_for = $this->logged_in_for;
+		$pagesHtml = $pagesHtml;
+		$nums = $nums;
+		$type = 'All';
+		$activeParent = $this->activeParent;
+		$active = 'allpages';
+//		$links = $pages->links('nifty.backend.pagination.nifty');
+
+		return View('nifty.backend.pages.index', compact(
+			'user',
+			'isAdmin',
+			'configs',
+			'logged_in_for',
+			'pagesHtml',
+			'nums',
+			'type',
+			'activeParent',
+			'active'
+//			'links'
+			));
+
 	}
 
-	public function published_pages()
-	{
-		$pages = Page::getLatestVersions( 'published', $this->paginate );
-
-		$backendPages = new Jamesy\BackendPages( $pages, $type = 'published' );
-		$pagesHtml = $backendPages->getPagesHtml();
-
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
-
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");	
-
-        return View::make('backend.pages.index', [
-        			'user' => $this->user, 
-        			'isAdmin' => $this->isAdmin, 
-        			'configs' => $this->configs, 
-        			'logged_in_for' => $this->logged_in_for, 
-        			'pagesHtml' => $pagesHtml, 
-        			'nums' => $nums,
-        			'type' => 'Published', 
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);		
-	}
-
-	public function draft_pages()
-	{
-		$pages = Page::getLatestVersions( 'drafts', $this->paginate );
-
-		$backendPages = new Jamesy\BackendPages( $pages, $type = 'drafts' );
-		$pagesHtml = $backendPages->getPagesHtml();
-
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
-
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");	
-
-        return View::make('backend.pages.index', [
-        			'user' => $this->user, 
-        			'isAdmin' => $this->isAdmin, 
-        			'configs' => $this->configs, 
-        			'logged_in_for' => $this->logged_in_for, 
-        			'pagesHtml' => $pagesHtml, 
-        			'nums' => $nums,
-        			'type' => 'Drafts', 
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);		
-	}
-
-	public function deleted_pages()
-	{
-		$pages = Page::getLatestVersions( 'deleted', $this->paginate );
-
-		$backendPages = new Jamesy\BackendPages( $pages, $type = 'deleted' );
-		$pagesHtml = $backendPages->getPagesHtml();
-
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
-
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");	
-
-        return View::make('backend.pages.deleted', [
-        			'user' => $this->user, 
-        			'isAdmin' => $this->isAdmin, 
-        			'configs' => $this->configs, 
-        			'logged_in_for' => $this->logged_in_for, 
-        			'pagesHtml' => $pagesHtml, 
-        			'nums' => $nums, 
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);		
-	}	
 
 	public function create()
 	{
-		return View::make('backend.pages.new', [
-					'pagelist' => $this->pagelist, 
-					'user' => $this->user, 
-					'isAdmin' => $this->isAdmin, 
-					'logged_in_for' => $this->logged_in_for,
-        			'activeParent' => $this->activeParent,
-        			'active' => 'createpage',					
-					'configs' => $this->configs,
-					'thumbnailPath' => asset($this->thumbnailPath)
-				]);
+		$pagelist = $this->pagelist;
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$logged_in_for = $this->logged_in_for;
+		$activeParent = $this->activeParent;
+		$active = 'createpage';
+		$configs = $this->configs;
+		$thumbnailPath = asset($this->thumbnailPath);
+
+		return View('nifty.backend.pages.new', compact(
+			'pagelist',
+			'user',
+			'isAdmin',
+			'logged_in_for',
+			'activeParent',
+			'active',
+			'configs',
+			'thumbnailPath'
+			));
+
 	}
 
 	public function store()
@@ -148,10 +116,10 @@ class PageController extends BaseController {
 		$inputs = [];
 		foreach(Input::all() as $key=>$input)
 		{
-			$inputs[$key] = Jamesy\Sanitiser::trimInput($input);
-		}	
+			$inputs[$key] = Sanitiser::trimInput($input);
+		}
 
-		$validation = Jamesy\MyValidations::validate($inputs, $this->rules); 
+		$validation = MyValidations::validate($inputs, $this->rules);
 
 		if($validation != NULL)
 		{
@@ -161,7 +129,7 @@ class PageController extends BaseController {
 		else
 		{
 			$existingSlugs = Page::lists('slug');
-			$slug = Jamesy\MyValidations::makeSlug($existingSlugs, Str::slug($inputs['title']));
+			$slug = MyValidations::makeSlug($existingSlugs, Str::slug($inputs['title']));
 
 			$order = $inputs['order'];
 
@@ -174,10 +142,10 @@ class PageController extends BaseController {
 
 			$pageArr = [
 					'user_id' => $this->user->id,
-					'title' => $inputs['title'], 
+					'title' => $inputs['title'],
 					'slug' => $slug,
-					'summary' => $inputs['summary'], 
-					'content' => $inputs['content'], 
+					'summary' => $inputs['summary'],
+					'content' => $inputs['content'],
 					'link' => $link,
 					'featured_image' => $featured_image,
 					'order' => $order,
@@ -193,22 +161,22 @@ class PageController extends BaseController {
 				$parent = Page::find($inputs['parent_id']);
 				$page->makeChildOf($parent);
 			}
-				
+
 			Cache::flush();
-			return Redirect::to('dashboard/pages')->withSuccess('New page created.');	
+			return Redirect::to('dashboard/pages')->withSuccess('New page created.');
 		}
 
 	}
 
 	public function edit($id)
 	{
-		$page = Page::find($id); 
+		$page = Page::find($id);
 
 		return View::make('backend.pages.edit', [
-					'page' => $page, 
-					'pagelist' => $this->pagelist, 
-					'user' => $this->user, 
-					'isAdmin' => $this->isAdmin, 
+					'page' => $page,
+					'pagelist' => $this->pagelist,
+					'user' => $this->user,
+					'isAdmin' => $this->isAdmin,
 					'logged_in_for' => $this->logged_in_for,
         			'activeParent' => $this->activeParent,
         			'active' => 'allpages',
@@ -222,10 +190,10 @@ class PageController extends BaseController {
 	{
 		$inputs = [];
 		foreach(Input::all() as $key=>$input) {
-			$inputs[$key] = Jamesy\Sanitiser::trimInput($input);
-		}	
+			$inputs[$key] = Sanitiser::trimInput($input);
+		}
 
-		$validation = Jamesy\MyValidations::validate($inputs, $this->rules); 
+		$validation = MyValidations::validate($inputs, $this->rules);
 
 		if( $validation != NULL ) {
 			return Redirect::back()->withErrors($validation)->withInput();
@@ -245,17 +213,17 @@ class PageController extends BaseController {
 
 				$existingVersions = Page::where('slug', $oldPage->slug)->lists('version');
 
-				$version = Jamesy\MyValidations::assignVersion($existingVersions, $oldPage->version + 1); 
+				$version = MyValidations::assignVersion($existingVersions, $oldPage->version + 1);
 
 				$link = Input::get('link') ? Input::get('link') : NULL;
 				$featured_image = Input::get('featured_image') ? Input::get('featured_image') : NULL;
 
 				$pageArr = [
 						'user_id' => $this->user->id,
-						'title' => $inputs['title'], 
+						'title' => $inputs['title'],
 						'slug' => $oldPage->slug,
-						'summary' => $inputs['summary'], 
-						'content' => $inputs['content'], 
+						'summary' => $inputs['summary'],
+						'content' => $inputs['content'],
 						'link' => $link,
 						'featured_image' => $featured_image,
 						'order' => $order,
@@ -265,7 +233,7 @@ class PageController extends BaseController {
 						'is_current' => $inputs['is_online'] == 1 ? 1 : 0
 					];
 
-				$newPage = Page::create($pageArr);		
+				$newPage = Page::create($pageArr);
 
 				if( $inputs['parent_id'] != 0 ) {
 					$parent = Page::find($inputs['parent_id']);
@@ -273,8 +241,8 @@ class PageController extends BaseController {
 				}
 
 				$oldPageChildrenNum = count( $oldPage->getImmediateDescendants() );
- 
-				for ($i=0; $i < $oldPageChildrenNum; $i++) { 
+
+				for ($i=0; $i < $oldPageChildrenNum; $i++) {
 					$oldPage->getImmediateDescendants()[0]->makeChildOf( $newPage );
 				}
 
@@ -314,9 +282,93 @@ class PageController extends BaseController {
 
 			}
 
-			return Redirect::to('dashboard/pages')->withSuccess('Page successfully updated.');	
+			return Redirect::to('dashboard/pages')->withSuccess('Page successfully updated.');
 		}
 
+	}
+
+
+	public function published_pages()
+	{
+		$pages = Page::getLatestVersions( 'published', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'published' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+        return View::make('backend.pages.index', [
+        			'user' => $this->user,
+        			'isAdmin' => $this->isAdmin,
+        			'configs' => $this->configs,
+        			'logged_in_for' => $this->logged_in_for,
+        			'pagesHtml' => $pagesHtml,
+        			'nums' => $nums,
+        			'type' => 'Published',
+        			'activeParent' => $this->activeParent,
+        			'active' => 'allpages',
+        			'links' => $pages->links('backend.pagination.nifty')
+        		]);
+	}
+
+	public function draft_pages()
+	{
+		$pages = Page::getLatestVersions( 'drafts', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'drafts' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+        return View::make('backend.pages.index', [
+        			'user' => $this->user,
+        			'isAdmin' => $this->isAdmin,
+        			'configs' => $this->configs,
+        			'logged_in_for' => $this->logged_in_for,
+        			'pagesHtml' => $pagesHtml,
+        			'nums' => $nums,
+        			'type' => 'Drafts',
+        			'activeParent' => $this->activeParent,
+        			'active' => 'allpages',
+        			'links' => $pages->links('backend.pagination.nifty')
+        		]);
+	}
+
+	public function deleted_pages()
+	{
+		$pages = Page::getLatestVersions( 'deleted', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'deleted' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+        return View::make('backend.pages.deleted', [
+        			'user' => $this->user,
+        			'isAdmin' => $this->isAdmin,
+        			'configs' => $this->configs,
+        			'logged_in_for' => $this->logged_in_for,
+        			'pagesHtml' => $pagesHtml,
+        			'nums' => $nums,
+        			'activeParent' => $this->activeParent,
+        			'active' => 'allpages',
+        			'links' => $pages->links('backend.pagination.nifty')
+        		]);
 	}
 
 
@@ -367,11 +419,11 @@ class PageController extends BaseController {
 
 		if ( $page ) {
 			$allDescendants = $page->getDescendants();
-			$nodeDeletion = new Jamesy\NodeDeletion( $page, $allDescendants );
+			$nodeDeletion = new NodeDeletion( $page, $allDescendants );
 			$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
 			$page->is_deleted = 1;
-			$page->save();				
-		}	
+			$page->save();
+		}
 
 		Cache::flush();
 		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
@@ -386,13 +438,13 @@ class PageController extends BaseController {
 			$page = Page::find($pageId);
 			if ( $page ) {
 				$allDescendants = $page->getDescendants();
-				$nodeDeletion = new Jamesy\NodeDeletion( $page, $allDescendants );
+				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
 				$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
 				$page->is_deleted = 1;
-				$page->save();				
-			}			
+				$page->save();
+			}
 		}
-		
+
 		Cache::flush();
 		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
 	}
@@ -406,7 +458,7 @@ class PageController extends BaseController {
 		$page->save();
 		$restored = 1;
 
-		$parent = $page->parent()->first(); 
+		$parent = $page->parent()->first();
 		if ( $parent ) {
 			if ( $parent->is_deleted == 1 ) {
 				$page->is_deleted = 1;
@@ -435,7 +487,7 @@ class PageController extends BaseController {
 
 		foreach ( $pageIds as $pageId ) {
 			$page = Page::findOrFail( $pageId );
-			$parent = $page->parent()->first(); 
+			$parent = $page->parent()->first();
 			if ( $parent ) {
 				if ( $parent->is_deleted == 1 ) {
 					$page->is_deleted = 1;
@@ -444,18 +496,18 @@ class PageController extends BaseController {
 					$warning = "To restore children pages, parent pages must also be restored.";
 				}
 			}
-		}		
-		
+		}
+
 		Cache::flush();
 		return Redirect::back()->withSuccess($restored . ' ' . str_plural('page', $restored) . ' restored. ' . $warning);
 	}
 
 	public function destroy($id)
 	{
-		$page = Page::find( $id ); 
+		$page = Page::find( $id );
 
 		$allDescendants = $page->getDescendants();
-		$nodeDeletion = new Jamesy\NodeDeletion( $page, $allDescendants );
+		$nodeDeletion = new NodeDeletion( $page, $allDescendants );
 		$destroyed = 1 + $nodeDeletion->destroyAllDescendants();
 		$page->delete();
 
@@ -465,14 +517,14 @@ class PageController extends BaseController {
 
 	public function bulk_destroy()
 	{
-		$pageIds = Input::get('pages'); 
+		$pageIds = Input::get('pages');
 		$destroyed = 0;
 
 		foreach ( $pageIds as $pageId ) {
 			$page = Page::find( $pageId );
 			if ( $page ) {
 				$allDescendants = $page->getDescendants();
-				$nodeDeletion = new Jamesy\NodeDeletion( $page, $allDescendants );
+				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
 				$destroyed = $destroyed + 1 + $nodeDeletion->destroyAllDescendants();
 			}
 		}
@@ -488,17 +540,17 @@ class PageController extends BaseController {
 		$page = Page::findOrFail($id);
 		$olderVersions = Page::with('user')->whereSlug($page->slug)->orderBy('version', 'asc')->get();
 
-		$versions = new Jamesy\Versions($olderVersions);
+		$versions = new Versions($olderVersions);
 		$versionsHtml = $versions->getVersionsHtml();
 
 		return View::make('backend.pages.versions', [
-					'page' => $page, 
-					'versionsHtml' => $versionsHtml, 
-					'user' => $this->user, 
-					'isAdmin' => $this->isAdmin, 
+					'page' => $page,
+					'versionsHtml' => $versionsHtml,
+					'user' => $this->user,
+					'isAdmin' => $this->isAdmin,
 					'logged_in_for' => $this->logged_in_for,
-        			'activeParent' => $this->activeParent,	
-					'configs' => $this->configs, 
+        			'activeParent' => $this->activeParent,
+					'configs' => $this->configs,
 					'active' => 'allpages'
 				]);
 	}

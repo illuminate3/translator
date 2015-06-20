@@ -17,7 +17,10 @@
 		"barryvdh/laravel-debugbar": "^2.0",
 		"illuminate/html": "^5.0",
 		"laravelrus/localized-carbon": "dev-master",
-		"barryvdh/laravel-httpcache": "0.2.*"
+		"barryvdh/laravel-httpcache": "0.2.*",
+		"baum/baum": "~1.1",
+		"hashids/hashids": "0.3.*@dev"
+
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

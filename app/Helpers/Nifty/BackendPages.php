@@ -1,11 +1,14 @@
-<?php 
-namespace Jamesy;
+<?php
+namespace App\Helpers\Nifty;
+//namespace Jamesy;
+
 use Carbon\Carbon;
-use Str;
-use Sentry;
-use URL;
 use Config;
 use Hashids\Hashids;
+//use Sentry;
+use Str;
+use URL;
+
 
 class BackendPages
 {
@@ -13,10 +16,11 @@ class BackendPages
 
 	public function __construct($pages, $type)
 	{
-		$this->pages = (object) $pages;	
+		$this->pages = (object) $pages;
 		$this->pagesArray = $this->getConvertedToArray($pages);
 		$this->type = $type;
-		$this->userGroup = Str::lower(Sentry::getUser()->getGroups()[0]);
+//		$this->userGroup = Str::lower(Sentry::getUser()->getGroups()[0]);
+		$this->userGroup = "administrator";
 		$this->hashids = new Hashids(Config::get('app.key'), 8, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 	}
 
@@ -46,7 +50,7 @@ class BackendPages
 	public function getHighestPages()
 	{
 		$pages = $this->pagesArray;
-		$depth = 999;  
+		$depth = 999;
 
 		$highestLevel = [];
 
@@ -57,7 +61,7 @@ class BackendPages
 		}
 
 		foreach ($pages as $page) {
-			if ( $page->depth == $depth ) 
+			if ( $page->depth == $depth )
 				$highestLevel[] = $page;
 		}
 
@@ -131,7 +135,7 @@ class BackendPages
 
 		if ( count( $this->pagesArray ) ) {
 			$html .= $this->getPagesHtml();
-		}		
+		}
 
 		return $html;
 	}
@@ -196,7 +200,7 @@ class BackendPages
 		$cacheArrow = $arrow;
 		$children = $this->getDirectChildren($parent);
 		$this->pagesArray = array_diff($this->pagesArray, $children);
-		$html = ''; 
+		$html = '';
 		$hashids = $this->hashids;
 
 		if ( $this->type == 'deleted' ) {
