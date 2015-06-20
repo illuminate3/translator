@@ -1,8 +1,11 @@
-@extends('backend._template')
+@extends('app')
 
-@section('title')Edit Page @stop
+{{-- Web site Title --}}
+@section('title')
+{{ Lang::choice('kotoba::cms.page', 2) }} :: @parent
+@stop
 
-@section('page-css')
+@section('styles')
     <style>
         h5 a, h5 a:visited {
             color: #FFFFFF;
@@ -10,13 +13,39 @@
         img.img-thumbnail {
             cursor: pointer;
             margin-right: 10px;
-        }        
+        }
     </style>
 @stop
 
-@section('page-title') <h3><i class="fa fa-tasks"></i> Pages</h3> @stop
+@section('scripts')
+@stop
 
+@section('inline-scripts')
+@stop
+
+
+{{-- Content --}}
+@section('content')
+
+<div class="row">
+<h1>
+	<p class="pull-right">
+	<a href="/admin/pages" class="btn btn-default" title="{{ trans('kotoba::button.back') }}">
+		<i class="fa fa-chevron-left fa-fw"></i>
+		{{ trans('kotoba::button.back') }}
+	</a>
+	</p>
+	<i class="fa fa-tasks fa-lg"></i>
+	{{ trans('kotoba::general.command.edit') }}
+	<hr>
+</h1>
+</div>
+
+
+{{--
 @section('page')
+--}}
+
     <div class="col-lg-12">
         <div class="box info">
             <header>
@@ -25,18 +54,18 @@
                 </div>
                 <h5>Edit Page</h5>
                 <div class="toolbar">
-                    <a class="btn btn-default btn-sm btn-flat" href="{{URL::to('dashboard/pages/create')}}"><span class="fa fa-pencil"></span> New Page</a>
-                </div>                
+                    <a class="btn btn-default btn-sm btn-flat" href="{{URL::to('admin/pages/create')}}"><span class="fa fa-pencil"></span> New Page</a>
+                </div>
             </header>
         </div><!-- /.box -->
     </div>
     <div class="col-md-12">
-        {{Form::model($page, ["url" => "dashboard/pages/$page->id/update", 'class' => 'form-horizontal'])}}  
-            @include('backend.partials.page-form')
-        {{Form::close()}}  
-        
+        {!! Form::model($page, ["url" => "admin/pages/$page->id/update", 'class' => 'form-horizontal']) !!}
+			@include('nifty.backend.partials.page-form')
+        {!! Form::close() !!}
+
         <!-- Modal -->
-        <div class="modal fade" id="featuredImageModal" tabindex="-1" role="dialog" aria-labelledby="featuredImageModalLabel" aria-hidden="true" rel="{{ URL::to('dashboard/select-featured-image') }}">
+        <div class="modal fade" id="featuredImageModal" tabindex="-1" role="dialog" aria-labelledby="featuredImageModalLabel" aria-hidden="true" rel="{{ URL::to('admin/select-featured-image') }}">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -53,7 +82,7 @@
                 </div>
             </div>
         </div>
-                      
+
     </div>
 @stop
 
@@ -61,7 +90,7 @@
     {{ HTML::script('assets/ckfinder2.4/ckfinder.js') }}
     {{ HTML::script('assets/ckeditor4.3/ckeditor.js') }}
     <script>
-        var editor = CKEDITOR.replace('content', 
+        var editor = CKEDITOR.replace('content',
             {
                 // width: 600,
                 // height: 450
@@ -73,8 +102,8 @@
             var thumbPath = $('.imageTarget').attr('rel');
 
             if ( $('#featured_image').val().length > 0 ) {
-                $('.imageTarget').html( "<img src='" + thumbPath + '/' + $('#featured_image').val() + "' alt='featured image'>" ); 
-            } 
+                $('.imageTarget').html( "<img src='" + thumbPath + '/' + $('#featured_image').val() + "' alt='featured image'>" );
+            }
 
             $('#featuredImageModal').on('shown.bs.modal', function (e) {
                 $this = $(this);
@@ -116,8 +145,6 @@
                 });
             });
 
-        });        
+        });
     </script>
 @stop
-
-

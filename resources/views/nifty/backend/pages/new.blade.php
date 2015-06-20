@@ -58,7 +58,7 @@
     </div>
     <div class="col-md-12">
         {!! Form::open(['url' => 'admin/pages/create', 'class' => 'form-horizontal']) !!}
-            @include('nifty.backend.partials.page-form')
+			@include('nifty.backend.partials.page-form')
         {!! Form::close() !!}
 
         <!-- Modal -->

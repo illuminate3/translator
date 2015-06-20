@@ -168,21 +168,33 @@ class PageController extends Controller {
 
 	}
 
+
 	public function edit($id)
 	{
 		$page = Page::find($id);
 
-		return View::make('backend.pages.edit', [
-					'page' => $page,
-					'pagelist' => $this->pagelist,
-					'user' => $this->user,
-					'isAdmin' => $this->isAdmin,
-					'logged_in_for' => $this->logged_in_for,
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-					'configs' => $this->configs,
-					'thumbnailPath' => asset($this->thumbnailPath)
-				]);
+		$page = $page;
+		$pagelist = $this->pagelist;
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$logged_in_for = $this->logged_in_for;
+		$activeParent = $this->activeParent;
+		$active = 'allpages';
+		$configs = $this->configs;
+		$thumbnailPath = asset($this->thumbnailPath);
+
+		return View('nifty.backend.pages.edit', compact(
+			'page',
+			'pagelist',
+			'user',
+			'isAdmin',
+			'logged_in_for',
+			'activeParent',
+			'active',
+			'configs',
+			'thumbnailPath'
+			));
+
 	}
 
 
@@ -288,89 +300,75 @@ class PageController extends Controller {
 	}
 
 
-	public function published_pages()
+	public function destroy($id)
 	{
-		$pages = Page::getLatestVersions( 'published', $this->paginate );
+		$page = Page::find( $id );
 
-		$backendPages = new BackendPages( $pages, $type = 'published' );
-		$pagesHtml = $backendPages->getPagesHtml();
+		$allDescendants = $page->getDescendants();
+		$nodeDeletion = new NodeDeletion( $page, $allDescendants );
+		$destroyed = 1 + $nodeDeletion->destroyAllDescendants();
+		$page->delete();
 
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
-
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
-
-        return View::make('backend.pages.index', [
-        			'user' => $this->user,
-        			'isAdmin' => $this->isAdmin,
-        			'configs' => $this->configs,
-        			'logged_in_for' => $this->logged_in_for,
-        			'pagesHtml' => $pagesHtml,
-        			'nums' => $nums,
-        			'type' => 'Published',
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);
+		Cache::flush();
+		return Redirect::back()->withSuccess($destroyed . ' ' . str_plural('page', $destroyed) . ' permanently deleted.');
 	}
 
-	public function draft_pages()
+	public function bulk_destroy()
 	{
-		$pages = Page::getLatestVersions( 'drafts', $this->paginate );
+		$pageIds = Input::get('pages');
+		$destroyed = 0;
 
-		$backendPages = new BackendPages( $pages, $type = 'drafts' );
-		$pagesHtml = $backendPages->getPagesHtml();
+		foreach ( $pageIds as $pageId ) {
+			$page = Page::find( $pageId );
+			if ( $page ) {
+				$allDescendants = $page->getDescendants();
+				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
+				$destroyed = $destroyed + 1 + $nodeDeletion->destroyAllDescendants();
+			}
+		}
 
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+		Page::whereIn('id', $pageIds)->delete();
 
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
-
-        return View::make('backend.pages.index', [
-        			'user' => $this->user,
-        			'isAdmin' => $this->isAdmin,
-        			'configs' => $this->configs,
-        			'logged_in_for' => $this->logged_in_for,
-        			'pagesHtml' => $pagesHtml,
-        			'nums' => $nums,
-        			'type' => 'Drafts',
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);
+		Cache::flush();
+		return Redirect::back()->withSuccess($destroyed . ' ' . str_plural('page', $destroyed) . ' permanently deleted.');
 	}
 
-	public function deleted_pages()
+	public function delete($id)
 	{
-		$pages = Page::getLatestVersions( 'deleted', $this->paginate );
+		$page = Page::find($id);
+		$deleted = 0;
 
-		$backendPages = new BackendPages( $pages, $type = 'deleted' );
-		$pagesHtml = $backendPages->getPagesHtml();
+		if ( $page ) {
+			$allDescendants = $page->getDescendants();
+			$nodeDeletion = new NodeDeletion( $page, $allDescendants );
+			$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
+			$page->is_deleted = 1;
+			$page->save();
+		}
 
-		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
-		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
-		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
-		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
-
-		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
-
-        return View::make('backend.pages.deleted', [
-        			'user' => $this->user,
-        			'isAdmin' => $this->isAdmin,
-        			'configs' => $this->configs,
-        			'logged_in_for' => $this->logged_in_for,
-        			'pagesHtml' => $pagesHtml,
-        			'nums' => $nums,
-        			'activeParent' => $this->activeParent,
-        			'active' => 'allpages',
-        			'links' => $pages->links('backend.pagination.nifty')
-        		]);
+		Cache::flush();
+		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
 	}
 
+	public function bulk_delete()
+	{
+		$pageIds = Input::get('pages');
+		$deleted = 0;
+
+		foreach ( $pageIds as $pageId ) {
+			$page = Page::find($pageId);
+			if ( $page ) {
+				$allDescendants = $page->getDescendants();
+				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
+				$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
+				$page->is_deleted = 1;
+				$page->save();
+			}
+		}
+
+		Cache::flush();
+		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
+	}
 
 	public function bulk_publish()
 	{
@@ -410,43 +408,6 @@ class PageController extends Controller {
 
 		Cache::flush();
 		return Redirect::back()->withSuccess(count($pageIds) . ' ' . str_plural('page', count($pageIds)) . ' unpublished.');
-	}
-
-	public function delete($id)
-	{
-		$page = Page::find($id);
-		$deleted = 0;
-
-		if ( $page ) {
-			$allDescendants = $page->getDescendants();
-			$nodeDeletion = new NodeDeletion( $page, $allDescendants );
-			$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
-			$page->is_deleted = 1;
-			$page->save();
-		}
-
-		Cache::flush();
-		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
-	}
-
-	public function bulk_delete()
-	{
-		$pageIds = Input::get('pages');
-		$deleted = 0;
-
-		foreach ( $pageIds as $pageId ) {
-			$page = Page::find($pageId);
-			if ( $page ) {
-				$allDescendants = $page->getDescendants();
-				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
-				$deleted = $deleted + 1 + $nodeDeletion->softDeleteAllDescendants();
-				$page->is_deleted = 1;
-				$page->save();
-			}
-		}
-
-		Cache::flush();
-		return Redirect::back()->withSuccess($deleted . ' ' . str_plural('page', $deleted) . ' moved to trash.');
 	}
 
 	public function restore($id)
@@ -502,39 +463,6 @@ class PageController extends Controller {
 		return Redirect::back()->withSuccess($restored . ' ' . str_plural('page', $restored) . ' restored. ' . $warning);
 	}
 
-	public function destroy($id)
-	{
-		$page = Page::find( $id );
-
-		$allDescendants = $page->getDescendants();
-		$nodeDeletion = new NodeDeletion( $page, $allDescendants );
-		$destroyed = 1 + $nodeDeletion->destroyAllDescendants();
-		$page->delete();
-
-		Cache::flush();
-		return Redirect::back()->withSuccess($destroyed . ' ' . str_plural('page', $destroyed) . ' permanently deleted.');
-	}
-
-	public function bulk_destroy()
-	{
-		$pageIds = Input::get('pages');
-		$destroyed = 0;
-
-		foreach ( $pageIds as $pageId ) {
-			$page = Page::find( $pageId );
-			if ( $page ) {
-				$allDescendants = $page->getDescendants();
-				$nodeDeletion = new NodeDeletion( $page, $allDescendants );
-				$destroyed = $destroyed + 1 + $nodeDeletion->destroyAllDescendants();
-			}
-		}
-
-		Page::whereIn('id', $pageIds)->delete();
-
-		Cache::flush();
-		return Redirect::back()->withSuccess($destroyed . ' ' . str_plural('page', $destroyed) . ' permanently deleted.');
-	}
-
 	public function versions($id)
 	{
 		$page = Page::findOrFail($id);
@@ -571,4 +499,128 @@ class PageController extends Controller {
 		Cache::flush();
 		return Redirect::to('dashboard/pages')->withSuccess($selectedVersion->title . ' page successfully reverted to version ' . $selectedVersion->version);
 	}
+
+
+// Sorting -------------------------------------------------------
+	public function deleted_pages()
+	{
+		$pages = Page::getLatestVersions( 'deleted', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'deleted' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$configs = $this->configs;
+		$logged_in_for = $this->logged_in_for;
+		$pagesHtml = $pagesHtml;
+		$nums = $nums;
+		$activeParent = $this->activeParent;
+		$active = 'allpages';
+//		vlinks = $pages->links('backend.pagination.nifty');
+
+		return View('nifty.backend.pages.deleted', compact(
+			'user',
+			'isAdmin',
+			'configs',
+			'logged_in_for',
+			'pagesHtml',
+			'nums',
+			'activeParent',
+			'active'
+//			'links'
+			));
+
+	}
+
+
+	public function published_pages()
+	{
+		$pages = Page::getLatestVersions( 'published', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'published' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$configs = $this->configs;
+		$logged_in_for = $this->logged_in_for;
+		$pagesHtml = $pagesHtml;
+		$nums = $nums;
+		$type = 'Published';
+		$activeParent = $this->activeParent;
+		$active = 'allpages';
+//		$links = $pages->links('backend.pagination.nifty');
+
+		return View('nifty.backend.pages.index', compact(
+			'user',
+			'isAdmin',
+			'configs',
+			'logged_in_for',
+			'pagesHtml',
+			'nums',
+			'type',
+			'activeParent',
+			'active'
+//			'links'
+			));
+
+	}
+
+
+	public function draft_pages()
+	{
+		$pages = Page::getLatestVersions( 'drafts', $this->paginate );
+
+		$backendPages = new BackendPages( $pages, $type = 'drafts' );
+		$pagesHtml = $backendPages->getPagesHtml();
+
+		$allNotDeletedNum = Page::getNotDeletedPagesNum( $this->cacheMinutes );
+		$publishedNum  = Page::getPublishedPagesNum( $this->cacheMinutes );
+		$draftsNum = Page::getDraftPagesNum( $this->cacheMinutes );
+		$deletedNum = Page::getDeletedPagesNum( $this->cacheMinutes );
+
+		$nums = compact("allNotDeletedNum", "publishedNum", "draftsNum", "deletedNum");
+
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$configs = $this->configs;
+		$logged_in_for = $this->logged_in_for;
+		$pagesHtml = $pagesHtml;
+		$nums = $nums;
+		$type = 'Drafts';
+		$activeParent = $this->activeParent;
+		$active = 'allpages';
+//		$links = $pages->links('backend.pagination.nifty');
+
+		return View('nifty.backend.pages.index', compact(
+			'user',
+			'isAdmin',
+			'configs',
+			'logged_in_for',
+			'pagesHtml',
+			'nums',
+			'type',
+			'activeParent',
+			'active'
+//			'links'
+			));
+
+	}
+
+
 }
