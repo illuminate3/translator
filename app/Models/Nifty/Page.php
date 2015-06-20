@@ -35,7 +35,7 @@ class Page extends Node {
 // Relations -------------------------------------------------------
 	public function user()
 	{
-		return $this->belongsTo('App\Models\Nifty\User');
+		return $this->belongsTo('App\Models\User');
 	}
 
 

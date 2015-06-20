@@ -144,7 +144,7 @@ oTable =
                     </tr>
                 </thead>
                 <tbody>
-                   {{ $pagesHtml }}
+                   {!! $pagesHtml !!}
                 </tbody>
             </table>
         </div>

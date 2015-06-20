@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+//use App\Models\Nifty\Page;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -32,5 +33,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
+
+
+
+	public function pages()
+	{
+		return $this->hasMany('App\Models\Nifty\PPage');
+	}
+
+
 
 }
