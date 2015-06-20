@@ -1,11 +1,14 @@
 <?php
+namespace App\Helpers\Nifty;
+//namespace Jamesy;
 
-namespace Jamesy;
 
-use Page;
+//use Page;
+use App\Models\Nifty\Page;
 
-class NodeDeletion 
+class NodeDeletion
 {
+
 	public function __construct($node,$descendants)
 	{
 		$this->node = $node;
@@ -33,7 +36,7 @@ class NodeDeletion
 		if ( $num ) {
 			foreach ($descendants as $descendant) {
 				$this->destroyAllVersions($descendant);
-			}			
+			}
 		}
 
 		return $num;
@@ -52,7 +55,7 @@ class NodeDeletion
 	{
 		$node = $this->node;
 		$childrenNum = $this->childrenNum;
-		
+
 		for ( $i=0; $i<$childrenNum; $i++ ) {
 			$node->getImmediateDescendants()[0]->makeRoot();
 		}
@@ -66,9 +69,11 @@ class NodeDeletion
 		$childrenNum = $this->childrenNum;
 
 		if ( $newParent ) {
-			for ( $i=0; $i < $childrenNum; $i++ ) { 
+			for ( $i=0; $i < $childrenNum; $i++ ) {
 				$node->getImmediateDescendants()[0]->makeChildOf($newParent);
 			}
 		}
 	}
+
+
 }

@@ -44,6 +44,38 @@ oTable =
 	$('#table').DataTable({
 	});
 });
+
+function unHideOptions() {
+	$('.optionsDiv').removeClass('opacity');
+	$('#bulk-options').removeAttr('disabled');
+	var html = '';
+	$(':checkbox.acheckbox:checked').each(function() {
+		html += "<input type='checkbox' name='pages[]' value='" + $(this).val() + "' class='hidden' checked='checked'>";
+	});
+	$('#bulk-options-form .form-group .appendTarget').html(html);
+}
+
+function handleOption(option) {
+	switch(option) {
+		case "" :
+			$('#bulk-options-form').attr('action', '#');
+			$('#bulk-submit').attr('disabled', 'disabled').removeClass().addClass('btn btn-default btn-rect').text('Submit');
+			break;
+		case "0" :
+			$('#bulk-options-form').attr( 'action', $('#bulkDeleteUrl').val() );
+			$('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-1').text('Trash ' + $(':checkbox.acheckbox:checked').size());
+			break;
+		case "1" :
+			$('#bulk-options-form').attr( 'action', $('#bulkPublishUrl').val() );
+			$('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-2').text('Publish ' + $(':checkbox.acheckbox:checked').size());
+			break;
+		case "2" :
+			$('#bulk-options-form').attr( 'action', $('#bulkDraftUrl').val() );
+			$('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-5').text('Draft ' + $(':checkbox.acheckbox:checked').size());
+			break;
+	}
+}
+
 @stop
 
 
@@ -64,20 +96,48 @@ oTable =
 </h1>
 </div>
 
-{{-- section('page') --}}
-    <div class="col-lg-12">
-        <div class="box info">
-            <header>
-                <div class="icons">
-                    <i class="fa fa-flag-o"></i>
-                </div>
-                <h5>{{ $type }} Pages</h5>
-                <div class="toolbar">
-                    <a class="btn btn-default btn-sm btn-flat" href="{{URL::to('admin/pages/create')}}"><span class="fa fa-pencil"></span> New Page</a>
-                </div>
-            </header>
-        </div><!-- /.box -->
-    </div>
+<div class="row">
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+<li role="presentation" class="{{ $type == 'All' ? 'active' : '' }}">
+	<a href="{{ URL::to('admin/pages') }}">
+		{{ trans('kotoba::general.all') }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['allNotDeletedNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="{{ $type == 'Published' ? 'active' : '' }}">
+	<a href="{{ URL::to('admin/pages/published') }}">
+		{{ trans('kotoba::cms.published') }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['publishedNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="{{ $type == 'Drafts' ? 'active' : '' }}">
+	<a href="{{ URL::to('admin/pages/drafts') }}">
+		{{ Lang::choice('kotoba::cms.draft', 2) }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['draftsNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="">
+	<a href="{{ URL::to('admin/pages/trash') }}">
+		{{ Lang::choice('kotoba::cms.draft', 2) }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['deletedNum'] }}
+		</span>
+	</a>
+</li>
+</ul>
+</div>
+
 
     <div class="col-md-12">
         <div class="btn-group page-options">
@@ -131,61 +191,40 @@ oTable =
                 {{ Session::get('success') }}
             </div>
         @endif
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th><input type='checkbox' id="checkAll" name='allposts'></th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Version</th>
-                        <th>Created</th>
-                        <th>Updated</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {!! $pagesHtml !!}
-                </tbody>
-            </table>
-        </div>
-    </div>
+
+<div class="row">
+<table id="table" class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th>
+				<input type='checkbox' id="checkAll" name='allposts'>
+			</th>
+			<th>
+				{{ trans('kotoba::table.title') }}
+			</th>
+			<th>
+				{{ trans('kotoba::table.author') }}
+			</th>
+			<th>
+				{{ trans('kotoba::table.version') }}
+			</th>
+			<th>
+				{{ trans('kotoba::table.created') }}
+			</th>
+			<th>
+				{{ trans('kotoba::table.updated') }}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	   {!! $pagesHtml !!}
+	</tbody>
+</table>
+</div>
+
+
 
     <div class="col-md-12">
         {{-- $links --}}
     </div>
-@stop
-
-@section('page-js')
-    <script>
-        function unHideOptions() {
-            $('.optionsDiv').removeClass('opacity');
-            $('#bulk-options').removeAttr('disabled');
-            var html = '';
-            $(':checkbox.acheckbox:checked').each(function() {
-                html += "<input type='checkbox' name='pages[]' value='" + $(this).val() + "' class='hidden' checked='checked'>";
-            });
-            $('#bulk-options-form .form-group .appendTarget').html(html);
-        }
-
-        function handleOption(option) {
-            switch(option) {
-                case "" :
-                    $('#bulk-options-form').attr('action', '#');
-                    $('#bulk-submit').attr('disabled', 'disabled').removeClass().addClass('btn btn-default btn-rect').text('Submit');
-                    break;
-                case "0" :
-                    $('#bulk-options-form').attr( 'action', $('#bulkDeleteUrl').val() );
-                    $('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-1').text('Trash ' + $(':checkbox.acheckbox:checked').size());
-                    break;
-                case "1" :
-                    $('#bulk-options-form').attr( 'action', $('#bulkPublishUrl').val() );
-                    $('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-2').text('Publish ' + $(':checkbox.acheckbox:checked').size());
-                    break;
-                case "2" :
-                    $('#bulk-options-form').attr( 'action', $('#bulkDraftUrl').val() );
-                    $('#bulk-submit').removeAttr('disabled').removeClass().addClass('btn btn-default btn-rect btn-metis-5').text('Draft ' + $(':checkbox.acheckbox:checked').size());
-                    break;
-            }
-        }
-    </script>
 @stop

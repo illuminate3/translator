@@ -6,6 +6,10 @@ use App\Models\Nifty\Page;
 use App\Models\Nifty\Setting;
 
 use App\Helpers\Nifty\BackendPages;
+use App\Helpers\Nifty\MyValidations;
+use App\Helpers\Nifty\NodeDeletion;
+use App\Helpers\Nifty\Sanitiser;
+use App\Helpers\Nifty\Versions;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\DeleteRequest;
@@ -19,6 +23,7 @@ use Cache;
 use Carbon\Carbon;
 //use Datatables;
 use Flash;
+use Redirect;
 use Route;
 use Theme;
 use View;
@@ -163,7 +168,9 @@ class PageController extends Controller {
 			}
 
 			Cache::flush();
-			return Redirect::to('dashboard/pages')->withSuccess('New page created.');
+//			return Redirect::to('admin/pages')->withSuccess('New page created.');
+			Flash::success( trans('kotoba::cms.success.page_create') );
+			return redirect('admin/pages');
 		}
 
 	}
@@ -231,7 +238,8 @@ class PageController extends Controller {
 				$featured_image = Input::get('featured_image') ? Input::get('featured_image') : NULL;
 
 				$pageArr = [
-						'user_id' => $this->user->id,
+//						'user_id' => $this->user->id,
+						'user_id' => 1,
 						'title' => $inputs['title'],
 						'slug' => $oldPage->slug,
 						'summary' => $inputs['summary'],
@@ -294,7 +302,9 @@ class PageController extends Controller {
 
 			}
 
-			return Redirect::to('dashboard/pages')->withSuccess('Page successfully updated.');
+//			return Redirect::to('admin/pages')->withSuccess('Page successfully updated.');
+			Flash::success( trans('kotoba::cms.success.page_update') );
+			return redirect('admin/pages');
 		}
 
 	}
@@ -312,6 +322,7 @@ class PageController extends Controller {
 		Cache::flush();
 		return Redirect::back()->withSuccess($destroyed . ' ' . str_plural('page', $destroyed) . ' permanently deleted.');
 	}
+
 
 	public function bulk_destroy()
 	{
@@ -471,20 +482,32 @@ class PageController extends Controller {
 		$versions = new Versions($olderVersions);
 		$versionsHtml = $versions->getVersionsHtml();
 
-		return View::make('backend.pages.versions', [
-					'page' => $page,
-					'versionsHtml' => $versionsHtml,
-					'user' => $this->user,
-					'isAdmin' => $this->isAdmin,
-					'logged_in_for' => $this->logged_in_for,
-        			'activeParent' => $this->activeParent,
-					'configs' => $this->configs,
-					'active' => 'allpages'
-				]);
+		$page = $page;
+		$versionsHtml = $versionsHtml;
+		$user = $this->user;
+		$isAdmin = $this->isAdmin;
+		$logged_in_for = $this->logged_in_for;
+		$activeParent = $this->activeParent;
+		$configs = $this->configs;
+		$active = 'allpages';
+
+		return View('nifty.backend.pages.versions', compact(
+			'page',
+			'versionsHtml',
+			'user',
+			'isAdmin',
+			'logged_in_for',
+			'activeParent',
+			'configs',
+			'active'
+			));
+
 	}
+
 
 	public function select_version($id)
 	{
+
 		$currentVersion = Page::findOrFail($id);
 		$selectedVersion = Page::findOrFail( Input::get('selectedVersion') );
 
@@ -497,7 +520,9 @@ class PageController extends Controller {
 		$selectedVersion->save();
 
 		Cache::flush();
-		return Redirect::to('dashboard/pages')->withSuccess($selectedVersion->title . ' page successfully reverted to version ' . $selectedVersion->version);
+//		return Redirect::to('admin/pages')->withSuccess($selectedVersion->title . ' page successfully reverted to version ' . $selectedVersion->version);
+		Flash::success( $selectedVersion->title .  trans('kotoba::cms.changed_to_version') . $selectedVersion->version );
+		return redirect('admin/pages');
 	}
 
 

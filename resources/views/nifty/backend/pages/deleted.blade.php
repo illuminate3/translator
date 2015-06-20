@@ -56,23 +56,48 @@
 </h1>
 </div>
 
-{{--
-@section('page')
---}}
 
-    <div class="col-lg-12">
-        <div class="box info">
-            <header>
-                <div class="icons">
-                    <i class="fa fa-flag-o"></i>
-                </div>
-                <h5>Deleted Pages</h5>
-                <div class="toolbar">
-                    <a class="btn btn-default btn-sm btn-flat" href="{{URL::to('admin/pages/create')}}"><span class="fa fa-pencil"></span> New Page</a>
-                </div>
-            </header>
-        </div><!-- /.box -->
-    </div>
+<div class="row">
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+<li role="presentation" class="">
+	<a href="{{ URL::to('admin/pages') }}">
+		{{ trans('kotoba::general.all') }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['allNotDeletedNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="">
+	<a href="{{ URL::to('admin/pages/published') }}">
+		{{ trans('kotoba::cms.published') }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['publishedNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="">
+	<a href="{{ URL::to('admin/pages/drafts') }}">
+		{{ Lang::choice('kotoba::cms.draft', 2) }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['draftsNum'] }}
+		</span>
+	</a>
+</li>
+<li role="presentation" class="active">
+	<a href="{{ URL::to('admin/pages/trash') }}">
+		{{ Lang::choice('kotoba::cms.draft', 2) }}
+		&nbsp;
+		<span class="badge">
+			{{ $nums['deletedNum'] }}
+		</span>
+	</a>
+</li>
+</ul>
+</div>
 
     <div class="col-md-12">
         <div class="btn-group page-options">
@@ -129,7 +154,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                   {{ $pagesHtml }}
+                   {!! $pagesHtml !!}
                 </tbody>
             </table>
         </div>
