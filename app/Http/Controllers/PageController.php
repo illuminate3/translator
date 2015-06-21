@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Flash;
 use Redirect;
 use Route;
+use Str;
 use Theme;
 use View;
 
@@ -63,7 +64,7 @@ class PageController extends Controller {
 	public function index()
 	{
 		$pages = Page::getLatestVersions( 'allNotDeleted', $this->paginate );
-
+//dd($pages);
 		$backendPages = new BackendPages( $pages, $type = 'all' );
 		$pagesHtml = $backendPages->getPagesHtml();
 
@@ -112,7 +113,6 @@ class PageController extends Controller {
 		$configs = $this->configs;
 		$thumbnailPath = asset($this->thumbnailPath);
 
-
 		return View('nifty.backend.pages.create',
 //		return Theme::View('menus.edit',
 			$this->page_repo->create(),
@@ -126,8 +126,8 @@ class PageController extends Controller {
 					'configs',
 					'thumbnailPath'
 			));
-
 	}
+
 
 	public function store()
 	{

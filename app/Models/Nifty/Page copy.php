@@ -3,6 +3,9 @@ namespace App\Models\Nifty;
 
 use Illuminate\Database\Eloquent\Model;
 
+//use App\Models\Nifty\User;
+//use App\Models\User;
+
 //use Laracasts\Presenter\PresentableTrait;
 use Vinkla\Translator\Translatable;
 use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
@@ -10,8 +13,7 @@ use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 use Baum\Node;
 use Cache;
 
-class Page extends Node {
-//class Page extends Node implements TranslatableContract {
+class PageCopy extends Node implements TranslatableContract {
 
 	use Translatable;
 //	use PresentableTrait;
@@ -44,36 +46,20 @@ class Page extends Node {
 
 
 // Translated Columns -------------------------------------------------------
-/*
-			$table->string('title')->nullable();
-			$table->string('slug')->nullable();
-			$table->string('summary')->nullable();
-			$table->text('content')->nullable();
-
-			$table->string('meta_title')->nullable();
-			$table->string('meta_keywords')->nullable();
-			$table->string('meta_description')->nullable();
-*/
 	protected $translatedAttributes = [
-		'meta_description',
-		'meta_keywords',
-		'meta_title',
-
-		'content',
-		'slug',
-		'summary',
+		'status',
 		'title'
 		];
 
 
 
 	public static $rules = [
-// 		'title' => 'required|max:255',
-// 		'summary' => 'required|max:512',
-// 		'content' => 'required',
-// 		'order' => 'integer',
-// 		'link' => 'URL'
-		];
+		'title' => 'required|max:255',
+		'summary' => 'required|max:512',
+		'content' => 'required',
+		'order' => 'integer',
+		'link' => 'URL'
+	];
 
 
 // Relations -------------------------------------------------------

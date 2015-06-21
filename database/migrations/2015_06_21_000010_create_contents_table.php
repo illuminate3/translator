@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePagesTable extends Migration
+class CreateContentsTable extends Migration
 {
 
 	public function __construct()
@@ -19,7 +19,7 @@ class CreatePagesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create($this->prefix . 'pages', function(Blueprint $table) {
+		Schema::create($this->prefix . 'contents', function(Blueprint $table) {
 
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
@@ -65,7 +65,7 @@ class CreatePagesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop($this->prefix . 'pages');
+		Schema::drop($this->prefix . 'contents');
 	}
 
 

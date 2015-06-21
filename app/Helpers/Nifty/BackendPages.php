@@ -50,6 +50,7 @@ class BackendPages
 	public function getHighestPages()
 	{
 		$pages = $this->pagesArray;
+
 		$depth = 999;
 
 		$highestLevel = [];

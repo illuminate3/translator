@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin'], function() {
 
 Route::group(['prefix' => 'admin'], function() {
 
+	Route::resource('contents', 'ContentsController');
 	Route::resource('locales', 'LocalesController');
 	Route::resource('menus', 'MenusController');
 	Route::resource('menulinks', 'MenuLinksController');

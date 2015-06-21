@@ -2,83 +2,16 @@
 
 {{-- Web site Title --}}
 @section('title')
-{{ Lang::choice('kotoba::cms.menu', 2) }} :: @parent
+{{ Lang::choice('kotoba::general.content', 2) }} :: @parent
 @stop
 
 @section('styles')
-    <style>
-        h5 a, h5 a:visited {
-            color: #FFFFFF;
-        }
-        img.img-thumbnail {
-            cursor: pointer;
-            margin-right: 10px;
-        }
-    </style>
 @stop
 
 @section('scripts')
-	{{ HTML::script('assets/ckfinder2.4/ckfinder.js') }}
-	{{ HTML::script('assets/ckeditor4.3/ckeditor.js') }}
 @stop
 
 @section('inline-scripts')
-var editor = CKEDITOR.replace('content',
-	{
-		// width: 600,
-		// height: 450
-	});
-
-CKFinder.setupCKEditor(editor, '{{asset("assets/ckfinder2.4")}}');
-
-jQuery(document).ready(function($) {
-	var thumbPath = $('.imageTarget').attr('rel');
-
-	if ( $('#featured_image').val().length > 0 ) {
-		$('.imageTarget').html( "<img src='" + thumbPath + '/' + $('#featured_image').val() + "' alt='featured image'>" );
-	}
-
-	$('#featuredImageModal').on('shown.bs.modal', function (e) {
-		$this = $(this);
-	   var url = $this.attr('rel');
-		$.get(url, function(data) {
-			if ( data.success ) {
-				var images = data.success;
-				var html = '';
-				$.each(images, function(index, val) {
-					var filename = val.substring(val.lastIndexOf("/") + 1, val.length);
-					html += "<img class='img-thumbnail' src='" + val + "' rel='" + filename + "'>";
-				});
-
-				$this.find('.modal-body').html(html);
-
-				$('.img-thumbnail').click(function(event) {
-					event.preventDefault();
-					$image = $(this);
-					$('#featured_image').val($image.attr('rel'));
-					$('.imageTarget').fadeIn('slow', function() {
-						$(this).html("<img src='" + data.thumbnailPath + '/' + $image.attr('rel') + "' alt='featured image'>");
-					});
-					$this.modal('hide');
-				});
-			}
-
-			if ( data.error ) {
-				$this.find('.modal-body').html(data.error);
-			}
-		});
-
-	});
-
-	$('#clearFeaturedImage').click(function(event) {
-		event.preventDefault();
-		$('#featured_image').val('');
-		$('.imageTarget').fadeOut('slow', function() {
-			$(this).html('');
-		});
-	});
-
-});
 @stop
 
 
@@ -88,23 +21,25 @@ jQuery(document).ready(function($) {
 <div class="row">
 <h1>
 	<p class="pull-right">
-	<a href="/admin/pages" class="btn btn-default" title="{{ trans('kotoba::button.back') }}">
+	<a href="/admin/contents" class="btn btn-default" title="{{ trans('kotoba::button.back') }}">
 		<i class="fa fa-chevron-left fa-fw"></i>
 		{{ trans('kotoba::button.back') }}
 	</a>
 	</p>
-	<i class="fa fa-tasks fa-lg"></i>
+	<i class="fa fa-edit fa-lg"></i>
 	{{ trans('kotoba::general.command.create') }}
 	<hr>
 </h1>
 </div>
 
 
+<div class="row">
 {!! Form::open([
-	'url' => 'admin/pages/create',
+	'url' => 'admin/contents',
 	'method' => 'POST',
 	'class' => 'form-horizontal'
 ]) !!}
+
 
 <div class="col-sm-6">
 
@@ -148,6 +83,8 @@ jQuery(document).ready(function($) {
 </div>
 <div class="col-sm-6">
 
+place holder
+{{--
 	<div class="form-group">
 		{!! Form::label('parent_id', trans('kotoba::cms.parent'), ['class' => 'control-label']) !!}
 		{!! Form::select('parent_id', $pagelist, Input::old('parent_id'), ['class' => 'form-control', 'id' => 'parent_id']) !!}
@@ -173,6 +110,7 @@ jQuery(document).ready(function($) {
 		<a class="btn btn-default btn-rect btn-grad" id="changeFeaturedImage" data-toggle="modal" data-target="#featuredImageModal">{{ trans('kotoba::general.change') }}</a>
 		<a class="btn btn-metis-3 btn-rect btn-grad" id="clearFeaturedImage">{{ trans('kotoba::general.clear') }}</a>
 	</div>
+--}}
 
 </div>
 
@@ -186,7 +124,7 @@ jQuery(document).ready(function($) {
 
 <div class="row">
 <div class="col-sm-6">
-	<a href="/admin/menus" class="btn btn-default btn-block" title="{{ trans('kotoba::button.cancel') }}">
+	<a href="/admin/contents" class="btn btn-default btn-block" title="{{ trans('kotoba::button.cancel') }}">
 		<i class="fa fa-times fa-fw"></i>
 		{{ trans('kotoba::button.cancel') }}
 	</a>
@@ -201,29 +139,5 @@ jQuery(document).ready(function($) {
 {!! Form::close() !!}
 
 
-
-
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="featuredImageModal" tabindex="-1" role="dialog" aria-labelledby="featuredImageModalLabel" aria-hidden="true" rel="{{ URL::to('admin/select-featured-image') }}">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="featuredImageModalLabel">Click on Image to Select</h4>
-			</div>
-			<div class="modal-body">
-				<img src="{{asset('assets/images/ajax-loader.gif')}}" alt="Loading">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-metis-3 btn-grad btn-rect" data-dismiss="modal">Close</button>
-				<!-- <button type="button" class="btn btn-metis-6 btn-grad btn-rect">Select</button> -->
-			</div>
-		</div>
-	</div>
-</div>
-
+</div> <!-- ./ row -->
 @stop
