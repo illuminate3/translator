@@ -143,6 +143,9 @@ return [
 		'App\Providers\BusServiceProvider',
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
+
+//'Kjamesy\Cms\CmsServiceProvider',
+
 		'App\Providers\RouteServiceProvider',
 
 		/*

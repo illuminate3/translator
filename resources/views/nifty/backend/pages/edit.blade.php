@@ -18,9 +18,67 @@
 @stop
 
 @section('scripts')
+	{{ HTML::script('assets/ckfinder2.4/ckfinder.js') }}
+	{{ HTML::script('assets/ckeditor4.3/ckeditor.js') }}
 @stop
 
 @section('inline-scripts')
+var editor = CKEDITOR.replace('content',
+	{
+		// width: 600,
+		// height: 450
+	});
+
+CKFinder.setupCKEditor(editor, '{{asset("assets/ckfinder2.4")}}');
+
+jQuery(document).ready(function($) {
+	var thumbPath = $('.imageTarget').attr('rel');
+
+	if ( $('#featured_image').val().length > 0 ) {
+		$('.imageTarget').html( "<img src='" + thumbPath + '/' + $('#featured_image').val() + "' alt='featured image'>" );
+	}
+
+	$('#featuredImageModal').on('shown.bs.modal', function (e) {
+		$this = $(this);
+	   var url = $this.attr('rel');
+		$.get(url, function(data) {
+			if ( data.success ) {
+				var images = data.success;
+				var html = '';
+				$.each(images, function(index, val) {
+					var filename = val.substring(val.lastIndexOf("/") + 1, val.length);
+					html += "<img class='img-thumbnail' src='" + val + "' rel='" + filename + "'>";
+				});
+
+				$this.find('.modal-body').html(html);
+
+				$('.img-thumbnail').click(function(event) {
+					event.preventDefault();
+					$image = $(this);
+					$('#featured_image').val($image.attr('rel'));
+					$('.imageTarget').fadeIn('slow', function() {
+						$(this).html("<img src='" + data.thumbnailPath + '/' + $image.attr('rel') + "' alt='featured image'>");
+					});
+					$this.modal('hide');
+				});
+			}
+
+			if ( data.error ) {
+				$this.find('.modal-body').html(data.error);
+			}
+		});
+
+	});
+
+	$('#clearFeaturedImage').click(function(event) {
+		event.preventDefault();
+		$('#featured_image').val('');
+		$('.imageTarget').fadeOut('slow', function() {
+			$(this).html('');
+		});
+	});
+
+});
 @stop
 
 
@@ -42,27 +100,13 @@
 </div>
 
 
-{{--
-@section('page')
---}}
+<div class="row">
+	{!! Form::model($page, ["url" => "admin/pages/$page->id/update", 'class' => 'form-horizontal']) !!}
+		@include('nifty.backend.partials.page-form')
+	{!! Form::close() !!}
+</div>
 
-    <div class="col-lg-12">
-        <div class="box info">
-            <header>
-                <div class="icons">
-                    <i class="fa fa-flag-o"></i>
-                </div>
-                <h5>Edit Page</h5>
-                <div class="toolbar">
-                    <a class="btn btn-default btn-sm btn-flat" href="{{URL::to('admin/pages/create')}}"><span class="fa fa-pencil"></span> New Page</a>
-                </div>
-            </header>
-        </div><!-- /.box -->
-    </div>
-    <div class="col-md-12">
-        {!! Form::model($page, ["url" => "admin/pages/$page->id/update", 'class' => 'form-horizontal']) !!}
-			@include('nifty.backend.partials.page-form')
-        {!! Form::close() !!}
+<div class="row">
 
         <!-- Modal -->
         <div class="modal fade" id="featuredImageModal" tabindex="-1" role="dialog" aria-labelledby="featuredImageModalLabel" aria-hidden="true" rel="{{ URL::to('admin/select-featured-image') }}">
@@ -83,68 +127,6 @@
             </div>
         </div>
 
-    </div>
-@stop
+</div>
 
-@section('page-js')
-    {{ HTML::script('assets/ckfinder2.4/ckfinder.js') }}
-    {{ HTML::script('assets/ckeditor4.3/ckeditor.js') }}
-    <script>
-        var editor = CKEDITOR.replace('content',
-            {
-                // width: 600,
-                // height: 450
-            });
-
-        CKFinder.setupCKEditor(editor, '{{asset("assets/ckfinder2.4")}}');
-
-        jQuery(document).ready(function($) {
-            var thumbPath = $('.imageTarget').attr('rel');
-
-            if ( $('#featured_image').val().length > 0 ) {
-                $('.imageTarget').html( "<img src='" + thumbPath + '/' + $('#featured_image').val() + "' alt='featured image'>" );
-            }
-
-            $('#featuredImageModal').on('shown.bs.modal', function (e) {
-                $this = $(this);
-               var url = $this.attr('rel');
-                $.get(url, function(data) {
-                    if ( data.success ) {
-                        var images = data.success;
-                        var html = '';
-                        $.each(images, function(index, val) {
-                            var filename = val.substring(val.lastIndexOf("/") + 1, val.length);
-                            html += "<img class='img-thumbnail' src='" + val + "' rel='" + filename + "'>";
-                        });
-
-                        $this.find('.modal-body').html(html);
-
-                        $('.img-thumbnail').click(function(event) {
-                            event.preventDefault();
-                            $image = $(this);
-                            $('#featured_image').val($image.attr('rel'));
-                            $('.imageTarget').fadeIn('slow', function() {
-                                $(this).html("<img src='" + data.thumbnailPath + '/' + $image.attr('rel') + "' alt='featured image'>");
-                            });
-                            $this.modal('hide');
-                        });
-                    }
-
-                    if ( data.error ) {
-                        $this.find('.modal-body').html(data.error);
-                    }
-                });
-
-            });
-
-            $('#clearFeaturedImage').click(function(event) {
-                event.preventDefault();
-                $('#featured_image').val('');
-                $('.imageTarget').fadeOut('slow', function() {
-                    $(this).html('');
-                });
-            });
-
-        });
-    </script>
 @stop

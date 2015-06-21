@@ -19,13 +19,24 @@
 		"laravelrus/localized-carbon": "dev-master",
 		"barryvdh/laravel-httpcache": "0.2.*",
 		"baum/baum": "~1.1",
-		"hashids/hashids": "0.3.*@dev"
-
+		"hashids/hashids": "1.0.5",
+		"kjamesy/cms": "dev-master",
+		"kjamesy/utility": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
 		"phpspec/phpspec": "~2.1"
 	},
+"repositories": [
+    {
+        "type": "git",
+        "url": "https://github.com/ACWLtd/Nifty"
+    },
+    {
+        "type": "git",
+        "url": "https://github.com/ACWLtd/Utility"
+    }
+],
 	"autoload": {
 		"classmap": [
 			"database"
@@ -54,6 +65,7 @@
 		]
 	},
 	"config": {
-		"preferred-install": "dist"
+		"preferred-install": "dev",
+		"prefer-stable" : true
 	}
 }

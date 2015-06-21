@@ -89,7 +89,7 @@
 </li>
 <li role="presentation" class="active">
 	<a href="{{ URL::to('admin/pages/trash') }}">
-		{{ Lang::choice('kotoba::cms.draft', 2) }}
+		{{ Lang::choice('kotoba::cms.trash', 2) }}
 		&nbsp;
 		<span class="badge">
 			{{ $nums['deletedNum'] }}
@@ -99,14 +99,7 @@
 </ul>
 </div>
 
-    <div class="col-md-12">
-        <div class="btn-group page-options">
-            <a class="btn btn-metis-5 btn-rect btn-line" role="button" href="{{ URL::to('admin/pages') }}">All ({{ $nums['allNotDeletedNum'] }})</a>
-            <a class="btn btn-metis-5 btn-rect btn-line" role="button" href="{{ URL::to('admin/pages/published') }}">Published ({{ $nums['publishedNum'] }})</a>
-            <a class="btn btn-metis-5 btn-rect btn-line" role="button" href="{{ URL::to('admin/pages/drafts') }}">Drafts ({{ $nums['draftsNum'] }})</a>
-            <a class="btn btn-metis-5 btn-rect disabled" href="{{ URL::to('admin/pages/trash') }}">Trash ({{ $nums['deletedNum'] }})</a>
-        </div>
-    </div>
+
 
     <div class="col-md-12 optionsDiv opacity">
         {!! Form::open(['url' => '#', 'id' => 'bulk-options-form']) !!}

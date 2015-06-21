@@ -2,7 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nifty\Page;
-//use App\Models\Repositories\PageRepository;
+use App\Models\Repositories\PageRepository;
+
 use App\Models\Nifty\Setting;
 
 use App\Helpers\Nifty\BackendPages;
@@ -31,8 +32,16 @@ use View;
 
 class PageController extends Controller {
 
-	public function __construct()
+	protected $menu;
+
+	public function __construct(
+			PageRepository $page_repo
+		)
 	{
+		$this->page_repo = $page_repo;
+// middleware
+//		$this->middleware('admin');
+
 //		$this->user = Sentry::getUser();
 		$this->user = "1";
 //		$this->isAdmin = User::isAdmin( $this->user );
@@ -103,15 +112,19 @@ class PageController extends Controller {
 		$configs = $this->configs;
 		$thumbnailPath = asset($this->thumbnailPath);
 
-		return View('nifty.backend.pages.new', compact(
-			'pagelist',
-			'user',
-			'isAdmin',
-			'logged_in_for',
-			'activeParent',
-			'active',
-			'configs',
-			'thumbnailPath'
+
+		return View('nifty.backend.pages.create',
+//		return Theme::View('menus.edit',
+			$this->page_repo->create(),
+				compact(
+					'pagelist',
+					'user',
+					'isAdmin',
+					'logged_in_for',
+					'activeParent',
+					'active',
+					'configs',
+					'thumbnailPath'
 			));
 
 	}

@@ -11,7 +11,6 @@
 |
 */
 
-
 Route::group(['prefix' => 'admin'], function() {
 
 	Route::get('pages', 'PageController@index');
@@ -47,6 +46,9 @@ Route::group(['prefix' => 'admin'], function() {
 
 
 Route::get('/', 'WelcomeController@index');
+// Route::get('/', ['as' => 'home', function() {
+//     return View::make('hello');
+// }]);
 Route::get('home', 'HomeController@index');
 
 
@@ -65,3 +67,4 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
