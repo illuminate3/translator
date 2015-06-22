@@ -11,7 +11,9 @@ use DB;
 use Route;
 use Session;
 
+
 class ContentRepository extends BaseRepository {
+
 
 	/**
 	 * The Module instance.
@@ -38,6 +40,7 @@ class ContentRepository extends BaseRepository {
 //dd($this->pagelist);
 	}
 
+
 	/**
 	 * Get role collection.
 	 *
@@ -62,6 +65,7 @@ class ContentRepository extends BaseRepository {
 			);
 	}
 
+
 	/**
 	 * Get user collection.
 	 *
@@ -80,6 +84,7 @@ class ContentRepository extends BaseRepository {
 
 		return compact('content', 'links');
 	}
+
 
 	/**
 	 * Get user collection.
@@ -108,6 +113,7 @@ class ContentRepository extends BaseRepository {
 			'pagelist'
 			);
 	}
+
 
 	/**
 	 * Get all models.
@@ -158,10 +164,12 @@ class ContentRepository extends BaseRepository {
 			$content->update($values);
 		}
 
+		$this->manageBaum($input['parent_id']);
+
 		App::setLocale('en');
 		return;
-
 	}
+
 
 	/**
 	 * Update a role.
@@ -206,6 +214,8 @@ class ContentRepository extends BaseRepository {
 
 			$content->update($values);
 		}
+
+		$this->manageBaum($input['parent_id'], $id);
 
 		App::setLocale('en');
 		return;
@@ -257,6 +267,28 @@ class ContentRepository extends BaseRepository {
 //dd($parents);
 
 		return $parents;
+	}
+
+
+	public function manageBaum($parent_id, $id)
+	{
+//dd($parent_id);
+
+		if ($parent_id != 0 && $id != null) {
+			$node = Content::find($id);
+			$node->makeChildOf($parent_id);
+		}
+
+/*
+		if( $inputs['parent_id'] != 0 && $inputs['parent_id'] != $oldPage->parent_id ) {
+			$parent = Page::find($inputs['parent_id']);
+			$oldPage->makeChildOf($parent);
+		}
+
+		if( $inputs['parent_id'] == 0 && $oldPage->parent_id != NULL ) {
+			$oldPage->makeRoot();
+		}
+*/
 	}
 
 
