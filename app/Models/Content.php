@@ -81,4 +81,22 @@ class Content extends Node implements TranslatableContract {
 	}
 
 
+	public static function getParentOptions($exceptId)
+	{
+//dd($exceptId);
+dd(['0' => trans('kotoba::cms.no_parent')]
+				+ static::whereIsDeleted(0)
+				->lists('title', 'id'));
+
+		return $exceptId
+			? ['0' => trans('kotoba::cms.no_parent')]
+				+ static::whereIsDeleted(0)
+				->whereNotIn('id', [$exceptId])
+				->lists('title', 'id')
+			: ['0' => trans('kotoba::cms.no_parent')]
+				+ static::whereIsDeleted(0)
+				->lists('title', 'id');
+	}
+
+
 }

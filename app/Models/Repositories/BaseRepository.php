@@ -44,4 +44,10 @@ abstract class BaseRepository {
 	}
 
 
+// 	public function scopeIsDeleted($query)
+// 	{
+// 		return $query->where('active', 1);
+// 	}
+
+
 }

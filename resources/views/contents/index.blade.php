@@ -63,10 +63,6 @@ oTable =
 						<i class="fa fa-pencil fa-fw"></i>
 						{{ trans('kotoba::button.edit') }}
 					</a>
-					<a href="/admin/contentlinks/{{ $content->id }}" class="btn btn-info" title="{{ trans('kotoba::button.edit') }}">
-						<i class="fa fa-link fa-fw"></i>
-						{{ Lang::choice('kotoba::button.link', 2) }}
-					</a>
 				</td>
 			</tr>
 		@endforeach

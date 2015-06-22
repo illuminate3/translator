@@ -44,7 +44,7 @@
 ) !!}
 
 
-<div class="col-sm-6">
+<div class="col-sm-9">
 
 	@if (count($locales))
 
@@ -57,13 +57,22 @@
 	</ul>
 
 	<div class="tab-content padding-lg margin-bottom-xl">
-
 	@foreach( $locales as $locale => $properties)
-		<div role="tabpanel" class="tab-pane fade @if ($locale == $lang)in active @endif" id="{{{ $properties['id'] }}}">
+	<div role="tabpanel" class="tab-pane fade @if ($locale == $lang)in active @endif" id="{{{ $properties['id'] }}}">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#content" aria-controls="content" role="tab" data-toggle="tab">{{ trans('kotoba::cms.content') }}</a></li>
+		<li role="presentation"><a href="#meta" aria-controls="meta" role="tab" data-toggle="tab">{{ trans('kotoba::cms.meta') }}</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="content">
 
 			<div class="form-group">
 				<label for="title">{{ trans('kotoba::general.title') }}</label>
-				<input type="text" class="form-control" name="{{ 'title_'. $properties['id'] }}" id="{{ 'title_'. $properties['id'] }}"  value="{{ $content->translate($properties['locale'])->title }}">
+				<input type="text" class="form-control" name="{{ 'title_'. $properties['id'] }}" id="{{ 'title_'. $properties['id'] }}" value="{{ $content->translate($properties['locale'])->title }}">
 			</div>
 
 			<div class="form-group">
@@ -77,14 +86,34 @@
 			</div>
 
 		</div>
-	@endforeach
+		<div role="tabpanel" class="tab-pane" id="meta">
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_title') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_title_'. $properties['id'] }}" id="{{ 'meta_title_'. $properties['id'] }}" value="{{ $content->translate($properties['locale'])->meta_title }}">
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_keywords') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_keywords_'. $properties['id'] }}" id="{{ 'meta_keywords_'. $properties['id'] }}" value="{{ $content->translate($properties['locale'])->meta_keywords }}">
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_description') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_description_'. $properties['id'] }}" id="{{ 'meta_description_'. $properties['id'] }}" value="{{ $content->translate($properties['locale'])->meta_description }}">
+			</div>
+
+		</div>
 
 	</div>
 
+	</div><!-- ./ panel -->
+	@endforeach
+	</div>
 	@endif
 
-</div>
-<div class="col-sm-6">
+</div><!-- ./ col -->
+<div class="col-sm-3">
 
 place holder
 {{--

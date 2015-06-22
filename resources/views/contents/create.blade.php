@@ -41,7 +41,7 @@
 ]) !!}
 
 
-<div class="col-sm-6">
+<div class="col-sm-9">
 
 	@if (count($locales))
 
@@ -54,9 +54,18 @@
 	</ul>
 
 	<div class="tab-content padding-lg margin-bottom-xl">
-
 	@foreach( $locales as $locale => $properties)
-		<div role="tabpanel" class="tab-pane fade @if ($locale == $lang)in active @endif" id="{{{ $properties['id'] }}}">
+	<div role="tabpanel" class="tab-pane fade @if ($locale == $lang)in active @endif" id="{{{ $properties['id'] }}}">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#content" aria-controls="content" role="tab" data-toggle="tab">{{ trans('kotoba::cms.content') }}</a></li>
+		<li role="presentation"><a href="#meta" aria-controls="meta" role="tab" data-toggle="tab">{{ trans('kotoba::cms.meta') }}</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="content">
 
 			<div class="form-group">
 				<label for="title">{{ trans('kotoba::general.title') }}</label>
@@ -74,21 +83,40 @@
 			</div>
 
 		</div>
-	@endforeach
+		<div role="tabpanel" class="tab-pane" id="meta">
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_title') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_title_'. $properties['id'] }}" id="{{ 'meta_title_'. $properties['id'] }}" placeholder="{{ trans('kotoba::cms.meta_title') }}">
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_keywords') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_keywords_'. $properties['id'] }}" id="{{ 'meta_keywords_'. $properties['id'] }}" placeholder="{{ trans('kotoba::cms.meta_keywords') }}">
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::cms.meta_title') }}</label>
+				<input type="text" class="form-control" name="{{ 'meta_description_'. $properties['id'] }}" id="{{ 'meta_description_'. $properties['id'] }}" placeholder="{{ trans('kotoba::cms.meta_description') }}">
+			</div>
+
+		</div>
 
 	</div>
 
+	</div><!-- ./ panel -->
+	@endforeach
+	</div>
 	@endif
 
-</div>
-<div class="col-sm-6">
+</div><!-- ./ col -->
+<div class="col-sm-3">
 
-place holder
-{{--
 	<div class="form-group">
 		{!! Form::label('parent_id', trans('kotoba::cms.parent'), ['class' => 'control-label']) !!}
 		{!! Form::select('parent_id', $pagelist, Input::old('parent_id'), ['class' => 'form-control', 'id' => 'parent_id']) !!}
 	</div>
+{{--
 	<div class="form-group">
 		{!! Form::label('is_online', Lang::choice('kotoba::general.status', 1), ['class' => 'control-label']) !!}
 		{!! Form::select('is_online', [0 => Lang::choice('kotoba::cms.draft', 1), 1 => trans('kotoba::cms.publish')], Input::old('is_online'), ['class' => 'form-control', 'id' => 'is_online']) !!}
@@ -112,7 +140,7 @@ place holder
 	</div>
 --}}
 
-</div>
+</div><!-- ./ col -->
 
 
 <hr>

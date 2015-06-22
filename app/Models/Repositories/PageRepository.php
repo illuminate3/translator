@@ -192,5 +192,4 @@ class PageRepository extends BaseRepository {
 		return $id;
 	}
 
-
 }

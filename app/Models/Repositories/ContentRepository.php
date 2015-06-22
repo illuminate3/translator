@@ -4,13 +4,12 @@ namespace App\Models\Repositories;
 use App\Models\Locale;
 use App\Models\Content;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 use App;
 use DB;
+use Route;
 use Session;
-//use Hash, DB, Auth;
-//use DateTime;
-//use File, Auth;
 
 class ContentRepository extends BaseRepository {
 
@@ -32,6 +31,11 @@ class ContentRepository extends BaseRepository {
 		)
 	{
 		$this->model = $content;
+
+		$this->id = Route::current()->parameter( 'id' );
+//		$this->pagelist = Page::getParentOptions( $exceptId = $this->id );
+//		$this->pagelist = Content::getParentOptions( $exceptId = $this->id );
+//dd($this->pagelist);
 	}
 
 	/**
@@ -43,9 +47,18 @@ class ContentRepository extends BaseRepository {
 	{
 		$lang = Session::get('locale');
 		$locales = $this->getLocales();
+		$locale_id = 1;
 //dd($locales);
+//		$pagelist = $this->getParents( $exceptId = $this->id, $locales );
+		$pagelist = $this->getParents($locale_id);
+		$pagelist = $pagelist->lists('title', 'id');
+//dd($pagelist);
 
-		return compact('locales', 'lang');
+		return compact(
+			'lang',
+			'locales',
+			'pagelist'
+			);
 	}
 
 	/**
@@ -96,7 +109,7 @@ class ContentRepository extends BaseRepository {
 //			'name'			=> $input['name'],
 			'is_online'			=> 1,
 			'order'				=> 1,
-			'user_id'				=> 1
+			'user_id'			=> 1
 		];
 //dd($values);
 
@@ -119,7 +132,11 @@ class ContentRepository extends BaseRepository {
 			$values = [
 				'content'		=> $input['content_'.$properties['id']],
 				'summary'		=> $input['summary_'.$properties['id']],
-				'title'			=> $input['title_'.$properties['id']]
+				'title'			=> $input['title_'.$properties['id']],
+
+				'meta_title'			=> $input['meta_title_'.$properties['id']],
+				'meta_keywords'			=> $input['meta_keywords_'.$properties['id']],
+				'meta_description'		=> $input['meta_description_'.$properties['id']]
 			];
 
 			$content->update($values);
@@ -144,8 +161,10 @@ class ContentRepository extends BaseRepository {
 		$content = Content::find($id);
 
 		$values = [
-			'name'			=> $input['name'],
-			'class'			=> $input['class']
+//			'name'			=> $input['name'],
+			'is_online'			=> 1,
+			'order'				=> 1,
+			'user_id'			=> 1
 		];
 
 		$content->update($values);
@@ -157,8 +176,13 @@ class ContentRepository extends BaseRepository {
 			App::setLocale($properties['locale']);
 
 			$values = [
-				'status'	=> $input['status_'.$properties['id']],
-				'title'		=> $input['title_'.$properties['id']]
+				'content'		=> $input['content_'.$properties['id']],
+				'summary'		=> $input['summary_'.$properties['id']],
+				'title'			=> $input['title_'.$properties['id']],
+
+				'meta_title'			=> $input['meta_title_'.$properties['id']],
+				'meta_keywords'			=> $input['meta_keywords_'.$properties['id']],
+				'meta_description'		=> $input['meta_description_'.$properties['id']]
 			];
 
 			$content->update($values);
@@ -180,10 +204,6 @@ class ContentRepository extends BaseRepository {
 
 //dd($locales);
 
-	if ( empty($locales) ) {
-		throw new LocalesNotDefinedException('Please make sure you have run "php artisan config:publish dimsav/laravel-translatable" ' . ' and that the locales configuration is defined.');
-	}
-
 	return $locales;
 	}
 
@@ -196,6 +216,23 @@ class ContentRepository extends BaseRepository {
 			->pluck('id');
 
 		return $id;
+	}
+
+//	public function getParents($exceptId, $locale)
+	public function getParents($locale_id)
+	{
+		$query = $this->model
+//		->join('menulink_translations', 'menulinks.id', '=', 'menulink_translations.menulink_id')
+		->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+		->where('content_translations.locale_id', '=', $locale_id)
+//		->where('contents.id', '!=', $exceptId, 'AND')
+		->where('contents.is_deleted', '=', 0, 'AND');
+//		->orderBy('menulinks.position');
+
+		$models = $query->get();
+//dd($models);
+
+		return $models;
 	}
 
 
