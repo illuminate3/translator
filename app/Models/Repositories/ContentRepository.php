@@ -50,8 +50,9 @@ class ContentRepository extends BaseRepository {
 		$locale_id = 1;
 //dd($locales);
 //		$pagelist = $this->getParents( $exceptId = $this->id, $locales );
-		$pagelist = $this->getParents($locale_id);
-		$pagelist = $pagelist->lists('title', 'id');
+
+		$pagelist = $this->getParents($locale_id, null);
+		$pagelist = array('' => trans('kotoba::cms.no_parent')) + $pagelist;
 //dd($pagelist);
 
 		return compact(
@@ -89,11 +90,23 @@ class ContentRepository extends BaseRepository {
 	public function edit($id)
 	{
 		$content = $this->model->find($id);
+
 		$lang = Session::get('locale');
 		$locales = $this->getLocales();
-//dd($content);
+		$locale_id = 1;
+//dd($locales);
+//		$pagelist = $this->getParents( $exceptId = $this->id, $locales );
 
-		return compact('content', 'locales', 'lang');
+		$pagelist = $this->getParents($locale_id, $id);
+		$pagelist = array('' => trans('kotoba::cms.no_parent')) + $pagelist;
+//dd($pagelist);
+
+		return compact(
+			'content',
+			'lang',
+			'locales',
+			'pagelist'
+			);
 	}
 
 	/**
@@ -107,8 +120,9 @@ class ContentRepository extends BaseRepository {
 
 		$values = [
 //			'name'			=> $input['name'],
-			'is_online'			=> 1,
-			'order'				=> 1,
+			'is_online'			=> $input['is_online'],
+			'order'				=> $input['link'],
+			'order'				=> $input['order'],
 			'user_id'			=> 1
 		];
 //dd($values);
@@ -133,6 +147,8 @@ class ContentRepository extends BaseRepository {
 				'content'		=> $input['content_'.$properties['id']],
 				'summary'		=> $input['summary_'.$properties['id']],
 				'title'			=> $input['title_'.$properties['id']],
+
+				'slug'			=> $input['slug_'.$properties['id']],
 
 				'meta_title'			=> $input['meta_title_'.$properties['id']],
 				'meta_keywords'			=> $input['meta_keywords_'.$properties['id']],
@@ -162,8 +178,9 @@ class ContentRepository extends BaseRepository {
 
 		$values = [
 //			'name'			=> $input['name'],
-			'is_online'			=> 1,
-			'order'				=> 1,
+			'is_online'			=> $input['is_online'],
+			'order'				=> $input['link'],
+			'order'				=> $input['order'],
 			'user_id'			=> 1
 		];
 
@@ -179,6 +196,8 @@ class ContentRepository extends BaseRepository {
 				'content'		=> $input['content_'.$properties['id']],
 				'summary'		=> $input['summary_'.$properties['id']],
 				'title'			=> $input['title_'.$properties['id']],
+
+				'slug'			=> $input['slug_'.$properties['id']],
 
 				'meta_title'			=> $input['meta_title_'.$properties['id']],
 				'meta_keywords'			=> $input['meta_keywords_'.$properties['id']],
@@ -219,20 +238,25 @@ class ContentRepository extends BaseRepository {
 	}
 
 //	public function getParents($exceptId, $locale)
-	public function getParents($locale_id)
+	public function getParents($locale_id, $id)
 	{
-		$query = $this->model
-//		->join('menulink_translations', 'menulinks.id', '=', 'menulink_translations.menulink_id')
-		->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
-		->where('content_translations.locale_id', '=', $locale_id)
-//		->where('contents.id', '!=', $exceptId, 'AND')
-		->where('contents.is_deleted', '=', 0, 'AND');
-//		->orderBy('menulinks.position');
+		if ($id != null ) {
+			$query = Content::select('content_translations.title AS title', 'contents.id AS id')
+				->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+				->where('content_translations.locale_id', '=', $locale_id)
+				->where('contents.id', '!=', $id, 'AND')
+				->get();
+		} else {
+			$query = Content::select('content_translations.title AS title', 'contents.id AS id')
+			->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+			->where('content_translations.locale_id', '=', $locale_id)
+			->get();
+		}
 
-		$models = $query->get();
-//dd($models);
+		$parents = $query->lists('title', 'id');
+//dd($parents);
 
-		return $models;
+		return $parents;
 	}
 
 

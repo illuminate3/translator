@@ -62,13 +62,13 @@
 
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#content" aria-controls="content" role="tab" data-toggle="tab">{{ trans('kotoba::cms.content') }}</a></li>
-		<li role="presentation"><a href="#meta" aria-controls="meta" role="tab" data-toggle="tab">{{ trans('kotoba::cms.meta') }}</a></li>
+		<li role="presentation" class="active"><a href="#content_{{$properties['locale']}}" aria-controls="content" role="tab" data-toggle="tab">{{ trans('kotoba::cms.content') }}</a></li>
+		<li role="presentation"><a href="#meta_{{$properties['locale']}}" aria-controls="meta" role="tab" data-toggle="tab">{{ trans('kotoba::cms.meta') }}</a></li>
 	</ul>
 
 	<!-- Tab panes -->
 	<div class="tab-content">
-		<div role="tabpanel" class="tab-pane active" id="content">
+		<div role="tabpanel" class="tab-pane active" id="content_{{$properties['locale']}}">
 
 			<div class="form-group">
 				<label for="title">{{ trans('kotoba::general.title') }}</label>
@@ -86,7 +86,12 @@
 			</div>
 
 		</div>
-		<div role="tabpanel" class="tab-pane" id="meta">
+		<div role="tabpanel" class="tab-pane" id="meta_{{$properties['locale']}}">
+
+			<div class="form-group">
+				<label for="title">{{ trans('kotoba::general.slug') }}</label>
+				<input type="text" class="form-control" name="{{ 'slug_'. $properties['id'] }}" id="{{ 'slug_'. $properties['id'] }}" value="{{ $content->translate($properties['locale'])->slug }}">
+			</div>
 
 			<div class="form-group">
 				<label for="title">{{ trans('kotoba::cms.meta_title') }}</label>
@@ -115,24 +120,26 @@
 </div><!-- ./ col -->
 <div class="col-sm-3">
 
-place holder
-{{--
 	<div class="form-group">
 		{!! Form::label('parent_id', trans('kotoba::cms.parent'), ['class' => 'control-label']) !!}
 		{!! Form::select('parent_id', $pagelist, Input::old('parent_id'), ['class' => 'form-control', 'id' => 'parent_id']) !!}
 	</div>
+
 	<div class="form-group">
 		{!! Form::label('is_online', Lang::choice('kotoba::general.status', 1), ['class' => 'control-label']) !!}
 		{!! Form::select('is_online', [0 => Lang::choice('kotoba::cms.draft', 1), 1 => trans('kotoba::cms.publish')], Input::old('is_online'), ['class' => 'form-control', 'id' => 'is_online']) !!}
 	</div>
+
 	<div class="form-group {{ $errors->first('order') ? 'has-error' : '' }}">
 		{!! Form::label('order', trans('kotoba::cms.position'), $errors->first('order'), ['class' => 'control-label']) !!}
 		{!! Form::text('order', Input::old('order'), ['id' => 'order', 'class' => 'form-control']) !!}
 	</div>
+
 	<div class="form-group {{ $errors->first('link') ? 'has-error' : '' }}">
 		{!! Form::label('link', Lang::choice('kotoba::cms.link', 1), $errors->first('link'), ['class' => 'control-label']) !!}
 		{!! Form::text('link', Input::old('link'), ['id' => 'link', 'class' => 'form-control', 'placeholder' => 'http://...']) !!}
 	</div>
+{{--
 	<div class="form-group">
 		{!! Form::label('featured_image', Lang::choice('kotoba::cms.image', 1), ['class' => 'control-label']) !!}
 		<div class="imageTarget" rel="{{ $thumbnailPath }}"></div>
