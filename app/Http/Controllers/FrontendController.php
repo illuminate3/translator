@@ -1,8 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Content;
+use App\Models\Repositories\ContentRepository;
 use App\Models\Nifty\Page;
 //use App\Models\Repositories\PageRepository;
+
+use App\Helpers\Nifty\NiftyMenus;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\DeleteRequest;
@@ -17,34 +21,91 @@ use Config;
 //use Datatables;
 use Flash;
 use Hashids\Hashids;
+use Session;
 use Route;
 use Theme;
 
 
 class FrontendController extends Controller {
 
-	public function __construct()
+
+	public function __construct(
+			Content $content,
+			ContentRepository $content_repo
+		)
 	{
+//dd('__construct');
+		$this->content = $content;
+		$this->content_repo = $content_repo;
+
+		$lang = Session::get('locale');
+		$locales = $this->content_repo->getLocales();
+		$locale_id = 1;
+
+
 		$this->page = Route::current()->parameter('page');
 		$slugs = explode('/', $this->page);
 		$lastSlug = Route::current()->getName() == 'search' ? 'search' : $slugs[count($slugs)-1];
+
 		$this->currentPage = Page::getPage( $slug = $lastSlug );
+//		$this->currentPage = $this->content_repo->getPage($locale_id, $slug = $lastSlug);
+
 		$this->roots = Page::getRoots();
-		$this->postsOrderBy = ['id', 'desc'];
-		$this->postsOrderByOrder = ['order', 'asc'];
+//		$this->roots = $this->content_repo->getRoots($locale_id);
+
+// 		$this->postsOrderBy = ['id', 'desc'];
+// 		$this->postsOrderByOrder = ['order', 'asc'];
 		$this->hashIds = new Hashids( Config::get('app.key'), 8, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' );
-		$this->postItemsNum = 10;
-		$this->postItemsPerPage = 2;
+// 		$this->postItemsNum = 10;
+// 		$this->postItemsPerPage = 2;
 		// $this->latestNewsPosts = Post::getLatestNewsPosts($this->postItemsNum, $this->postsOrderBy);
-		$this->contact = ["Demo NiftyCMS", "demo@niftycms.com"];
+// 		$this->contact = ["Demo NiftyCMS", "demo@niftycms.com"];
 	}
+
+
+	public function get_page()
+	{
+//dd('get_page');
+//dd($this->currentPage);
+		if ( $this->currentPage ) {
+			$mainMenu = NiftyMenus::getMainMenu( $this->currentPage );
+//dd($mainMenu);
+			$root = $this->currentPage->getRoot();
+			$secMenu = NiftyMenus::getSecMenu($root, $this->currentPage );
+
+//			return View::make('frontends.page', ['page' => $this->currentPage, 'mainMenu' => $mainMenu, 'secMenu' => $secMenu]);
+
+			$page = $this->currentPage;
+			$mainMenu = $mainMenu;
+			$secMenu = $secMenu;
+
+
+			return View('nifty.frontends.index', compact(
+				'mainMenu',
+				'page',
+				'secMenu'
+				));
+		}
+		else
+			App::abort(404404);
+	}
+
 
 	public function index()
 	{
+//dd('index');
 		if ( $homePage = Page::getPage( $slug = 'home-page' ) ) {
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $homePage );
+			$mainMenu = NiftyMenus::getMainMenu( $homePage );
 			// $posts = Post::getFrontendPosts($category = 'Home Featured', $this->postsOrderBy);
-			return View::make('frontends.index', ['page' => $homePage, /*'posts' => $posts,*/ 'mainMenu' => $mainMenu]);
+//			return View::make('frontends.index', ['page' => $homePage, /*'posts' => $posts,*/ 'mainMenu' => $mainMenu]);
+
+			$page = $homePage;
+			$mainMenu = $mainMenu;
+
+			return View('nifty.frontends.index', compact(
+				'mainMenu',
+				'page'
+				));
 		}
 		else
 			App::abort(404);
@@ -53,9 +114,9 @@ class FrontendController extends Controller {
 	public function contact_us()
 	{
 		if ( $contact_us = Page::getPage( $slug = 'contact-us' ) ) {
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $contact_us );
+			$mainMenu = NiftyMenus::getMainMenu( $contact_us );
 			$root = $contact_us->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu($root, $contact_us);
+			$secMenu = NiftyMenus::getSecMenu($root, $contact_us);
 			return View::make('frontends.contact-us', ['page' => $contact_us, 'active' => '', 'mainMenu' => $mainMenu, 'secMenu' => $secMenu]);
 		}
 		else
@@ -67,7 +128,7 @@ class FrontendController extends Controller {
 		$inputs = [];
 		foreach(Input::all() as $key=>$input)
 		{
-			$inputs[$key] = \Jamesy\Sanitiser::trimInput($input);
+			$inputs[$key] = Sanitiser::trimInput($input);
 		}
 
 		$rules = [
@@ -77,7 +138,7 @@ class FrontendController extends Controller {
 					'message' => 'required'
 				];
 
-		$validation = \Jamesy\MyValidations::validate($inputs, $rules);
+		$validation = MyValidations::validate($inputs, $rules);
 
 		if($validation != NULL) {
 			return Redirect::back()->withErrors($validation)->withInput();
@@ -106,28 +167,15 @@ class FrontendController extends Controller {
 		}
 	}
 
-	public function get_page()
-	{
-		if ( $this->currentPage ) {
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $this->currentPage );
-			$root = $this->currentPage->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu($root, $this->currentPage );
-
-			return View::make('frontends.page', ['page' => $this->currentPage, 'mainMenu' => $mainMenu, 'secMenu' => $secMenu]);
-		}
-		else
-			App::abort(404);
-	}
-
 	public function previewPage($hashedId)
 	{
 		$id = $this->hashIds->decrypt($hashedId)[0];
 
 		if ( $id ) {
 			$previewPage = Page::getPreviewPage( $id );
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $previewPage );
+			$mainMenu = NiftyMenus::getMainMenu( $previewPage );
 			$root = $previewPage->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu( $root, $previewPage );
+			$secMenu = NiftyMenus::getSecMenu( $root, $previewPage );
 
 			return View::make('frontends.page', ['page' => $previewPage, 'mainMenu' => $mainMenu, 'secMenu' => $secMenu]);
 		}
@@ -138,9 +186,9 @@ class FrontendController extends Controller {
 	public function get_blog()
 	{
 		if ( $blog = Page::getPage( $slug = 'blog' ) ) {
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $blog );
+			$mainMenu = NiftyMenus::getMainMenu( $blog );
 			$root = $blog->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu($root, $blog);
+			$secMenu = NiftyMenus::getSecMenu($root, $blog);
 
 			$posts = Post::getFrontendPosts( $this->postsOrderBy, $this->postItemsNum, $this->postItemsPerPage );
 
@@ -156,9 +204,9 @@ class FrontendController extends Controller {
 		$lastSlug = $slugs[count($slugs)-1];
 
 		if ( $blog = Page::getPage( $slug = 'blog' ) ) {
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $blog );
+			$mainMenu = NiftyMenus::getMainMenu( $blog );
 			$root = $blog->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu($root, $blog);
+			$secMenu = NiftyMenus::getSecMenu($root, $blog);
 
 			$post = Post::getFrontendPost( $lastSlug );
 
@@ -177,9 +225,9 @@ class FrontendController extends Controller {
 		if ( $id ) {
 			$blogPage = Page::getPage( $lug = 'blog' );
 			$blogPost = Post::find($id);
-			$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $blogPage );
+			$mainMenu = NiftyMenus::getMainMenu( $blogPage );
 			$root = $blogPage->getRoot();
-			$secMenu = \Jamesy\NiftyMenus::getSecMenu( $root, $blogPage );
+			$secMenu = NiftyMenus::getSecMenu( $root, $blogPage );
 
 			$posts = Post::getFrontendPosts( $this->postsOrderBy, $this->postItemsNum, $this->postItemsPerPage );
 
@@ -191,11 +239,11 @@ class FrontendController extends Controller {
 
 	public function do_search()
 	{
-		$term = \Jamesy\Sanitiser::trimInput( Input::get('term') );
-		$results = \Jamesy\Search::getSearchResults($term);
+		$term = Sanitiser::trimInput( Input::get('term') );
+		$results = Search::getSearchResults($term);
 
 		$searchPage = Page::getPage( $slug = 'search' );
-		$mainMenu = \Jamesy\NiftyMenus::getMainMenu( $searchPage );
+		$mainMenu = NiftyMenus::getMainMenu( $searchPage );
 		$secMenu = '';
 
 		return View::make('frontends.search', ['page' => $searchPage, 'term' => $term, 'results' => $results, 'mainMenu' => $mainMenu, 'secMenu' => $secMenu]);

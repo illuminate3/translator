@@ -1,10 +1,11 @@
 <?php
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
+
 class Locale extends Model {
+
 
 	/**
 	 * @var array
@@ -15,5 +16,6 @@ class Locale extends Model {
 		'script',
 		'native'
 		];
+
 
 }

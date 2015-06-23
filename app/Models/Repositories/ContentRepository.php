@@ -279,16 +279,89 @@ class ContentRepository extends BaseRepository {
 			$node->makeChildOf($parent_id);
 		}
 
-/*
-		if( $inputs['parent_id'] != 0 && $inputs['parent_id'] != $oldPage->parent_id ) {
-			$parent = Page::find($inputs['parent_id']);
-			$oldPage->makeChildOf($parent);
+		if ($parent_id == 0 && $id != null) {
+			$node = Content::find($id);
+			$node->makeRoot();
 		}
 
-		if( $inputs['parent_id'] == 0 && $oldPage->parent_id != NULL ) {
-			$oldPage->makeRoot();
-		}
+	}
+
+
+	public function getPage($locale_id, $slug)
+	{
+//dd($slug);
+		$page = DB::table('contents')
+			->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+			->where('content_translations.locale_id', '=', $locale_id)
+//			->where('contents.is_current', '=', 1, 'AND')
+			->where('contents.is_online', '=', 1, 'AND')
+			->where('contents.is_deleted', '=', 0, 'AND')
+			->where('content_translations.slug', '=', $slug, 'AND')
+			->first();
+//dd($page);
+
+/*
+	   $page =  static::whereIsCurrent(1)
+					   ->whereIsOnline(1)
+					   ->whereIsDeleted(0)
+					   ->whereSlug($slug)
+					   ->first();
 */
+		return $page;
+	}
+
+
+
+	public function getRoots($locale_id)
+	{
+		// $roots = Cache::rememberForever('roots', function()
+		// {
+		$page = DB::table('contents')
+			->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+			->where('content_translations.locale_id', '=', $locale_id)
+			->where('contents.is_online', '=', 1, 'AND')
+			->where('contents.is_deleted', '=', 0, 'AND')
+			->where('contents.parent_id', '=', null, 'AND')
+//			->where('content_translations.slug', '=', $slug, 'AND')
+//			->first();
+			->orderBy('order')
+			->get();
+//dd($page);
+
+/*
+			return static::whereIsCurrent(1)
+							->whereIsOnline(1)
+							->whereIsDeleted(0)
+							->whereParentId(NULL)
+							->where('slug', '<>', 'home-page')
+							->where('slug', '<>', 'search')
+							->where('slug', '<>', 'terms-conditions')
+							->orderBy('order')
+							->get();
+*/
+		// });
+
+		// return $roots;
+	}
+
+
+
+	public static function getStaticRoots($locale_id)
+	{
+		// $roots = Cache::rememberForever('roots', function()
+		// {
+		$page = DB::table('contents')
+			->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+			->where('content_translations.locale_id', '=', $locale_id)
+			->where('contents.is_online', '=', 1, 'AND')
+			->where('contents.is_deleted', '=', 0, 'AND')
+			->where('contents.parent_id', '=', null, 'AND')
+//			->where('content_translations.slug', '=', $slug, 'AND')
+//			->first();
+			->orderBy('order')
+			->get();
+//dd($page);
+		return $page;
 	}
 
 

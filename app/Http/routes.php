@@ -50,7 +50,7 @@ Route::get('/', 'WelcomeController@index');
 // Route::get('/', ['as' => 'home', function() {
 //     return View::make('hello');
 // }]);
-Route::get('home', 'HomeController@index');
+Route::get('/home', 'HomeController@index');
 
 
 

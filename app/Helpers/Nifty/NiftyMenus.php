@@ -1,15 +1,51 @@
 <?php
-namespace Jamesy;
+namespace App\Helpers\Nifty;
+//namespace Jamesy;
 
+use App\Models\Nifty\Page;
+use App\Models\Content;
+// use App\Models\Repositories\ContentRepository;
+// use App\Models\Locale;
+
+use Session;
 use URL;
-use Page;
 
-class NiftyMenus 
+
+class NiftyMenus
 {
+
+
+// 	public function __construct(
+// 			Content $content,
+// 			ContentRepository $content_repo
+// 		)
+// 	{
+// 		$this->content = $content;
+// 		$this->content_repo = $content_repo;
+// 	}
+
+
 	public static function getMainMenu($currentPage)
 	{
+//dd($currentPage);
+// 		$lang = Session::get('locale');
+//  		$locales = Locale::all();
+		$locale_id = 1;
+
+//dd('getMainMenu');
+
+
 		$roots = Page::getRoots();
+//		$roots = ContentRepository::getRoots($locale_id);
+//		$roots = ContentRepository::getStaticRoots($locale_id);
+//		$roots = Content::getStaticRoots($locale_id);
+//		$roots = Content::getRootsStatic();
+//dd($roots);
+
+
+//		$currentRoot = $currentPage->getRoot();
 		$currentRoot = $currentPage->getRoot();
+//		$currentRoot = Content::getRoots();
 		$html = '';
 
 		foreach ( $roots as $root ) {
@@ -31,12 +67,13 @@ class NiftyMenus
 
 	public static function getSecMenu($root, $currentPage)
 	{
+//dd('getSecMenu');
 		$children = Page::getChildren($root);
-		
-		if ( $root->id == $currentPage->id ) 
+
+		if ( $root->id == $currentPage->id )
 			$html = "<a class='list-group-item active' href='" . URL::to($root->slug) . "' >$root->title</a>";
 
-		else 
+		else
 			$html = "<a class='list-group-item' href='" . URL::to($root->slug) . "' >$root->title</a>";
 
 		foreach ( $children as $child ) {
@@ -44,7 +81,7 @@ class NiftyMenus
 				$html .= "<a class='list-group-item active' href='" . URL::to($root->slug . '/' . $child->slug) . "' >" . $child->title . "</a>";
 			else
 				$html .= "<a class='list-group-item' href='" . URL::to($root->slug . '/' . $child->slug) . "' >" . $child->title . "</a>";
-		}	
+		}
 
 		return $html;
 

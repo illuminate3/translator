@@ -4,8 +4,8 @@ namespace App\Models\Nifty;
 use Illuminate\Database\Eloquent\Model;
 
 //use Laracasts\Presenter\PresentableTrait;
-use Vinkla\Translator\Translatable;
-use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
+// use Vinkla\Translator\Translatable;
+// use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 
 use Baum\Node;
 use Cache;
@@ -13,7 +13,7 @@ use Cache;
 class Page extends Node {
 //class Page extends Node implements TranslatableContract {
 
-	use Translatable;
+// 	use Translatable;
 //	use PresentableTrait;
 
 	protected $table = 'pages';
@@ -23,7 +23,7 @@ class Page extends Node {
 
 
 // Translation Model -------------------------------------------------------
-	protected $translator = 'App\Models\Nifty\PageTranslation';
+// 	protected $translator = 'App\Models\Nifty\PageTranslation';
 
 
 // DEFINE Hidden -------------------------------------------------------

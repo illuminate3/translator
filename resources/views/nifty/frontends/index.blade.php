@@ -1,4 +1,4 @@
-@extends('frontends._template')
+@extends('nifty.frontends._template')
 
 @section('page-title')
     Home
@@ -10,7 +10,7 @@
 
 @section('page-content')
     <div class="col-sm-12">
-        <div class="editor-content"> 
+        <div class="editor-content">
             {{ $page->content }}
         </div>
     </div>
