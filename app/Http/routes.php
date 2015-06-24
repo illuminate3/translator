@@ -11,6 +11,17 @@
 |
 */
 
+
+Route::group(['prefix' => 'admin'], function() {
+
+	Route::resource('contents', 'ContentsController');
+	Route::resource('locales', 'LocalesController');
+	Route::resource('menus', 'MenusController');
+	Route::resource('menulinks', 'MenuLinksController');
+
+});
+
+
 Route::group(['prefix' => 'admin'], function() {
 
 	Route::get('pages', 'PageController@index');
@@ -36,16 +47,6 @@ Route::group(['prefix' => 'admin'], function() {
 
 });
 
-Route::group(['prefix' => 'admin'], function() {
-
-	Route::resource('contents', 'ContentsController');
-	Route::resource('locales', 'LocalesController');
-	Route::resource('menus', 'MenusController');
-	Route::resource('menulinks', 'MenuLinksController');
-
-});
-
-
 Route::get('/', 'WelcomeController@index');
 // Route::get('/', ['as' => 'home', function() {
 //     return View::make('hello');
@@ -54,8 +55,7 @@ Route::get('/home', 'HomeController@index');
 
 
 
-
-Route::get('{page}', 'FrontendController@get_page')->where('page', '.*');
+//Route::get('{page}', 'FrontendController@get_page')->where('page', '.*');
 
 
 

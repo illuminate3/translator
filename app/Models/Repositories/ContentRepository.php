@@ -126,8 +126,9 @@ class ContentRepository extends BaseRepository {
 
 		$values = [
 //			'name'			=> $input['name'],
+			'is_current'		=> 1,
 			'is_online'			=> $input['is_online'],
-			'order'				=> $input['link'],
+			'link'				=> $input['link'],
 			'order'				=> $input['order'],
 			'user_id'			=> 1
 		];
@@ -164,7 +165,7 @@ class ContentRepository extends BaseRepository {
 			$content->update($values);
 		}
 
-		$this->manageBaum($input['parent_id']);
+		$this->manageBaum($input['parent_id'], null);
 
 		App::setLocale('en');
 		return;
@@ -186,8 +187,9 @@ class ContentRepository extends BaseRepository {
 
 		$values = [
 //			'name'			=> $input['name'],
+			'is_current'		=> 1,
 			'is_online'			=> $input['is_online'],
-			'order'				=> $input['link'],
+			'link'				=> $input['link'],
 			'order'				=> $input['order'],
 			'user_id'			=> 1
 		];
@@ -297,7 +299,7 @@ class ContentRepository extends BaseRepository {
 			->where('contents.is_online', '=', 1, 'AND')
 			->where('contents.is_deleted', '=', 0, 'AND')
 			->where('content_translations.slug', '=', $slug, 'AND')
-			->first();
+			->get();
 //dd($page);
 
 /*

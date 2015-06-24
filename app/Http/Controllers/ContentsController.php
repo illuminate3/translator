@@ -44,9 +44,12 @@ class ContentsController extends Controller {
 	public function index()
 	{
 		$contents = $this->content->all();
-//dd($locales);
+//dd($contents);
+//		$locale = Session::get('locale');
+		$locale = 'en';
+		$locale_id = 1;
 
-		return Theme::View('contents.index', compact('contents', 'locales'));
+		return Theme::View('contents.index', compact('contents', 'locales', 'locale_id'));
 	}
 
 

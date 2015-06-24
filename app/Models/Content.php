@@ -3,21 +3,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-// use Laracasts\Presenter\PresentableTrait;
-// use Vinkla\Translator\Translatable;
-// use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
+use Laracasts\Presenter\PresentableTrait;
+use Vinkla\Translator\Translatable;
+use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 
 use Baum\Node;
 use Cache;
 use DB;
 
 
-class Content extends Node {
-//class Content extends Node implements TranslatableContract {
+//class Content extends Node {
+class Content extends Node implements TranslatableContract {
 //class Content extends Model implements TranslatableContract {
 
-// 	use Translatable;
-// 	use PresentableTrait;
+	use Translatable;
+	use PresentableTrait;
 
 	protected $table = 'contents';
 
@@ -88,7 +88,7 @@ class Content extends Node {
 	{
 		// $roots = Cache::rememberForever('roots', function()
 		// {
-			return static::whereIsCurrent(1)
+			$roots = static::whereIsCurrent(1)
 							->whereIsOnline(1)
 							->whereIsDeleted(0)
 							->whereParentId(NULL)
@@ -98,10 +98,30 @@ class Content extends Node {
 							->orderBy('order')
 							->get();
 		// });
+//dd($roots);
 
-		// return $roots;
+		return $roots;
 	}
 
+
+	public static function getRootsSQL($locale_id)
+	{
+		// $roots = Cache::rememberForever('roots', function()
+		// {
+		$page = DB::table('contents')
+			->join('content_translations', 'contents.id', '=', 'content_translations.content_id')
+			->where('content_translations.locale_id', '=', $locale_id)
+			->where('contents.is_online', '=', 1, 'AND')
+			->where('contents.is_deleted', '=', 0, 'AND')
+			->where('contents.parent_id', '=', null, 'AND')
+//			->where('content_translations.slug', '=', $slug, 'AND')
+//			->first();
+			->orderBy('order')
+			->get();
+//dd($page);
+
+		return $page;
+	}
 
 	public static function getStaticRoots($locale_id)
 	{

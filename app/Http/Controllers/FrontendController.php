@@ -47,11 +47,18 @@ class FrontendController extends Controller {
 		$slugs = explode('/', $this->page);
 		$lastSlug = Route::current()->getName() == 'search' ? 'search' : $slugs[count($slugs)-1];
 
-		$this->currentPage = Page::getPage( $slug = $lastSlug );
-//		$this->currentPage = $this->content_repo->getPage($locale_id, $slug = $lastSlug);
+//		$this->currentPage = Page::getPage( $slug = $lastSlug );
+//		$this->currentPage = Content::getPage( $slug = $lastSlug );
+		$this->currentPage = $this->content_repo->getPage($locale_id, $slug = $lastSlug);
+		$this->currentPage = new \Illuminate\Support\Collection($this->currentPage);
+//dd($this->currentPage);
 
-		$this->roots = Page::getRoots();
+//dd('here');
+//		$this->roots = Page::getRoots();
+		$this->roots = Content::getRoots();
 //		$this->roots = $this->content_repo->getRoots($locale_id);
+//		$this->roots = Content::getRoots($locale_id);
+//dd($this->roots);
 
 // 		$this->postsOrderBy = ['id', 'desc'];
 // 		$this->postsOrderByOrder = ['order', 'asc'];
@@ -70,6 +77,7 @@ class FrontendController extends Controller {
 		if ( $this->currentPage ) {
 			$mainMenu = NiftyMenus::getMainMenu( $this->currentPage );
 //dd($mainMenu);
+dd($this->currentPage);
 			$root = $this->currentPage->getRoot();
 			$secMenu = NiftyMenus::getSecMenu($root, $this->currentPage );
 
@@ -93,7 +101,7 @@ class FrontendController extends Controller {
 
 	public function index()
 	{
-//dd('index');
+dd('index');
 		if ( $homePage = Page::getPage( $slug = 'home-page' ) ) {
 			$mainMenu = NiftyMenus::getMainMenu( $homePage );
 			// $posts = Post::getFrontendPosts($category = 'Home Featured', $this->postsOrderBy);

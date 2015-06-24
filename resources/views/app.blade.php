@@ -38,7 +38,7 @@
 				</ul>
 
 <ul class="nav navbar-nav niftyNavUl">
-	{{ $mainMenu }}
+	{{-- $mainMenu --}}
 </ul>
 
 				<ul class="nav navbar-nav navbar-right">

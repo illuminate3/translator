@@ -4,8 +4,8 @@ namespace App\Helpers\Nifty;
 
 use App\Models\Nifty\Page;
 use App\Models\Content;
-// use App\Models\Repositories\ContentRepository;
-// use App\Models\Locale;
+use App\Models\Repositories\ContentRepository;
+use App\Models\Locale;
 
 use Session;
 use URL;
@@ -15,18 +15,20 @@ class NiftyMenus
 {
 
 
-// 	public function __construct(
-// 			Content $content,
-// 			ContentRepository $content_repo
-// 		)
-// 	{
-// 		$this->content = $content;
-// 		$this->content_repo = $content_repo;
-// 	}
+	public function __construct(
+			Content $content,
+			ContentRepository $content_repo
+		)
+	{
+		$this->content = $content;
+		$this->content_repo = $content_repo;
+	}
 
 
 	public static function getMainMenu($currentPage)
 	{
+//dd('getMainMenu');
+//		$currentPage = new \Illuminate\Support\Collection($currentPage);
 //dd($currentPage);
 // 		$lang = Session::get('locale');
 //  		$locales = Locale::all();
@@ -35,17 +37,20 @@ class NiftyMenus
 //dd('getMainMenu');
 
 
-		$roots = Page::getRoots();
-//		$roots = ContentRepository::getRoots($locale_id);
+//		$roots = Page::getRoots();
 //		$roots = ContentRepository::getStaticRoots($locale_id);
 //		$roots = Content::getStaticRoots($locale_id);
 //		$roots = Content::getRootsStatic();
+//		$roots = ContentRepository::getRoots($locale_id);
+//		$roots = Content::getRoots();
+		$roots = Content::getRootsSQL($locale_id);
+//		$roots = new \Illuminate\Support\Collection($roots);
 //dd($roots);
 
-
 //		$currentRoot = $currentPage->getRoot();
-		$currentRoot = $currentPage->getRoot();
-//		$currentRoot = Content::getRoots();
+//		$currentRoot = $currentPage->getRoot();
+		$currentRoot = Content::getRoots();
+//dd($currentPage);
 		$html = '';
 
 		foreach ( $roots as $root ) {
