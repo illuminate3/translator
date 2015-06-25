@@ -24,6 +24,15 @@
 				</p>
 			</div>
 			<div class="col-sm-4">
+{!!
+	$MainNavigation
+!!}
+{!!
+	$PrimaryNavigation
+!!}
+{{
+	$FooterNavigation
+}}
 {{--
 				<ul class="pull-right">
 					<li>{!! link_to_route('dashboard', 'Home') !!}</li>

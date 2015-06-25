@@ -144,6 +144,8 @@ return [
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
 
+//'App\Composers\NavigationComposer',
+
 //'Kjamesy\Cms\CmsServiceProvider',
 
 		'App\Providers\RouteServiceProvider',

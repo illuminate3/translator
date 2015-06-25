@@ -15,6 +15,7 @@ use Config;
 use DB;
 use Menu;
 use Session;
+use View;
 
 class MenuServiceProvider extends ServiceProvider {
 
@@ -25,6 +26,11 @@ class MenuServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
+
+
+View::composer('_partials.footer', 'App\Composers\NavigationComposer');
+View::composer('*', 'App\Composers\NavigationComposer');
+
 
 //		$lang = Session::get('locale');
 //dd($main_menu_id);
@@ -43,6 +49,7 @@ class MenuServiceProvider extends ServiceProvider {
 			{
 				$children->add($item->translate(Config::get('app.locale'))->url, $item->translate(Config::get('app.locale'))->title, Menu::items($item->as));
 			});
+
 
 //		}
 /*

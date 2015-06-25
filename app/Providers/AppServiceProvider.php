@@ -38,6 +38,8 @@ class AppServiceProvider extends ServiceProvider {
 App::register('App\Providers\MenuServiceProvider');
 //App::register('App\Providers\GeneralMenuProvider');
 
+//App::register('App\Composers\NavigationComposer');
+
 // AliasLoader::getInstance()->alias(
 // 	'Menus', 'Caffeinated\Menus\Facades\Menu'
 // );
