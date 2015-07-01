@@ -164,6 +164,7 @@ return [
 // 		'Caffeinated\Menus\MenusServiceProvider',
 // 		'App\Providers\GeneralMenuProvider',
 		'Baum\Providers\BaumServiceProvider',
+		'AuraIsHere\LaravelMultiTenant\LaravelMultiTenantServiceProvider',
 
 
 	],
@@ -224,7 +225,7 @@ return [
 		'HTML'				=> 'Illuminate\Html\HtmlFacade',
 		'LocalizedCarbon'	=> 'Laravelrus\LocalizedCarbon\LocalizedCarbon',
 		'DiffFormatter'		=> 'Laravelrus\LocalizedCarbon\DiffFactoryFacade',
-
+		'TenantScope'		=> 'AuraIsHere\LaravelMultiTenant\Facades\TenantScopeFacade',
 
 	],
 
